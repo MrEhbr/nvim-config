@@ -95,6 +95,7 @@ return {
 
 			-- Python
 			builtins.formatting.black,
+			-- HTML
 			builtins.formatting.tidy.with({
 				filetypes = { "html", "xml", "svg" },
 			}),

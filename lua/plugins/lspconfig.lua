@@ -5,11 +5,49 @@ return {
 		opts = function()
 			return {
 				ensure_installed = {
+					-- LSP
+					"marksman",
+					"phpactor",
+					"biome",
+					"svelte-language-server",
+					"pyright",
+					"nil", -- nix
+					"eslint-lsp",
+					"templ",
+					"buf-language-server",
+					"gopls",
+					"typescript-language-server",
+					"htmx-lsp",
+					"tailwindcss-language-server",
+					"json-lsp",
+					"yaml-language-server",
+					"lua-language-server",
+					-- Diagnostic
+					"eslint_d",
+					"golangci-lint",
+
+					-- Formatters
+					"biome",
+					"prettierd",
+					"rustywind",
+					"shfmt",
+					"gofumpt",
+					"goimports",
+					"goimports-reviser",
+					"golines",
+					"gomodifytags",
+					"pint",
+					"buf",
+					"nixpkgs-fmt",
+					"black",
+					"stylua",
+
+					-- Debuggers
 					"js-debug-adapter",
 					"chrome-debug-adapter",
 					"codelldb",
-					"eslint-lsp",
-					"json-lsp",
+					"delve",
+
 					-- "sql-formatter",
 					-- "sqlls",
 				},

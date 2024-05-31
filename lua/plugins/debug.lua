@@ -2,11 +2,11 @@ return {
 	"mfussenegger/nvim-dap",
 	dependencies = {
 		{ "rcarriga/nvim-dap-ui", dependencies = "nvim-neotest/nvim-nio" },
-		-- {
-		-- 	"theHamsta/nvim-dap-virtual-text",
-		-- 	dependencies = { "mfussenegger/nvim-dap" },
-		-- 	config = true,
-		-- },
+		{
+			"theHamsta/nvim-dap-virtual-text",
+			dependencies = { "mfussenegger/nvim-dap" },
+			config = true,
+		},
 		{
 			"nvim-telescope/telescope-dap.nvim",
 			dependencies = {
