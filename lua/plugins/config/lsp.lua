@@ -98,9 +98,8 @@ local servers = {
 	"biome",
 	"svelte",
 	"pyright",
-	"rnix",
+	"nixd",
 	"eslint",
-	-- "sqlls",
 	"templ",
 	"bufls",
 }
