@@ -24,7 +24,7 @@ return {
 					"lua-language-server",
 					-- Diagnostic
 					"eslint_d",
-					"golangci-lint",
+					-- "golangci-lint",
 
 					-- Formatters
 					"biome",
@@ -41,6 +41,8 @@ return {
 					"nixpkgs-fmt",
 					"black",
 					"stylua",
+					"cbfmt",
+					"markdownlint",
 
 					-- Debuggers
 					"js-debug-adapter",
@@ -68,16 +70,6 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			{
-				"j-hui/fidget.nvim",
-				opts = {
-					notification = {
-						window = {
-							winblend = 0,
-						},
-					},
-				},
-			},
 			{ ft = "lua", "folke/neodev.nvim", opts = {} },
 			{ "b0o/schemastore.nvim" },
 		},

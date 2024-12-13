@@ -5,6 +5,8 @@ return {
 		build = ":TSUpdate",
 		opts = {
 			ensure_installed = {
+				"markdown",
+				"markdown_inline",
 				"lua",
 				"go",
 				"rust",
@@ -20,6 +22,9 @@ return {
 				"make",
 				"templ",
 				"html",
+				"hurl",
+				"regex",
+				"bash",
 			},
 			auto_install = false,
 			autotag = {

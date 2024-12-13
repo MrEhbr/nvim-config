@@ -1,27 +1,44 @@
 return {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    event = "LspAttach",
-    cmd = { "Trouble", "TroubleToggle" },
-    config = function()
-        require("trouble").setup({})
-
-        local nmap = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, {
-                desc = desc
-            })
-        end
-        nmap("<leader>qq", function()
-            require("trouble").toggle()
-        end, "Toggle Diagnostics List (via Trouble plugin)")
-        nmap("<leader>qw", function()
-            require("trouble").toggle("workspace_diagnostics")
-        end, "Workspace diagnostics")
-        nmap("<leader>qd", function()
-            require("trouble").toggle("document_diagnostics")
-        end, "Document diagnostics")
-        nmap("<leader>qr", function()
-            require("trouble").toggle("lsp_references")
-        end, "LSP references (via Trouble plugin)")
-    end,
+	"folke/trouble.nvim",
+	dependencies = { "nvim-tree/nvim-web-devicons" },
+	event = "LspAttach",
+	cmd = { "Trouble" },
+	opts = {},
+	keys = {
+		{
+			"<leader>qq",
+			"<cmd>Trouble diagnostics toggle<cr>",
+			desc = "Diagnostics (Trouble)",
+		},
+		{
+			"<leader>qd",
+			"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+			desc = "Buffer Diagnostics (Trouble)",
+		},
+		{
+			"<leader>cs",
+			"<cmd>Trouble symbols toggle focus=false<cr>",
+			desc = "Symbols (Trouble)",
+		},
+		{
+			"<leader>cl",
+			"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+			desc = "LSP Definitions / references / ... (Trouble)",
+		},
+		{
+			"<leader>xL",
+			"<cmd>Trouble loclist toggle<cr>",
+			desc = "Location List (Trouble)",
+		},
+		{
+			"<leader>xQ",
+			"<cmd>Trouble qflist toggle<cr>",
+			desc = "Quickfix List (Trouble)",
+		},
+		{
+			"<leader>qr",
+			"<cmd>Trouble lsp_references toggle<cr>",
+			desc = "LSP references (via Trouble plugin)",
+		},
+	},
 }

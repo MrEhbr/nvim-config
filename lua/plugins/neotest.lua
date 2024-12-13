@@ -1,55 +1,121 @@
 return {
-	"nvim-neotest/neotest",
-	event = "VeryLazy",
-	dependencies = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-neotest/nvim-nio" },
-		{ "nvim-treesitter/nvim-treesitter" },
-		{ "antoinemadec/FixCursorHold.nvim" },
-		{
-			"MrEhbr/neotest-go",
-			ft = "go",
+	{
+		"nvim-neotest/neotest",
+		event = "VeryLazy",
+		dependencies = {
+			{
+				"nvim-neotest/nvim-nio",
+				"nvim-lua/plenary.nvim",
+				"antoinemadec/FixCursorHold.nvim",
+				"nvim-treesitter/nvim-treesitter",
+
+				"nvim-neotest/neotest-plenary",
+				"nvim-neotest/neotest-vim-test",
+				{ "fredrikaverpil/neotest-golang", version = "*" },
+			},
 		},
-		{
-			"rouge8/neotest-rust",
-			ft = "rust",
+
+		opts = function(_, opts)
+			opts.adapters = opts.adapters or {}
+			opts.adapters["neotest-golang"] = {
+				go_test_args = {
+					"-v",
+					"-count=1",
+					"-race",
+					"-parallel=1",
+					"-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+				},
+			}
+			opts.discovery = {
+				enabled = false,
+				concurrent = 1,
+			}
+			opts.running = {
+				concurrent = true,
+			}
+			opts.summary = {
+				animated = true,
+			}
+		end,
+		config = function(_, opts)
+			if opts.adapters then
+				local adapters = {}
+				for name, config in pairs(opts.adapters or {}) do
+					if type(name) == "number" then
+						if type(config) == "string" then
+							config = require(config)
+						end
+						adapters[#adapters + 1] = config
+					elseif config ~= false then
+						local adapter = require(name)
+						if type(config) == "table" and not vim.tbl_isempty(config) then
+							local meta = getmetatable(adapter)
+							if adapter.setup then
+								adapter.setup(config)
+							elseif adapter.adapter then
+								adapter.adapter(config)
+								adapter = adapter.adapter
+							elseif meta and meta.__call then
+								adapter(config)
+							else
+								error("Adapter " .. name .. " does not support setup")
+							end
+						end
+						adapters[#adapters + 1] = adapter
+					end
+				end
+				opts.adapters = adapters
+			end
+
+			-- Set up Neotest.
+			require("neotest").setup(opts)
+		end,
+		keys = {
+			{
+				"<leader>tn",
+				"<cmd>lua require('neotest').run.run()<CR>",
+				desc = "[t]est [n]earest",
+			},
+			{
+				"<leader>tp",
+				"<cmd>lua require('neotest').output_panel.toggle()<CR>",
+				desc = "[t]est [p]anel",
+			},
+			{
+				"<leader>tf",
+				"<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",
+				desc = "[t]est [f]ile",
+			},
+			{
+				"<leader>td",
+				"<cmd>lua require('neotest').run.run({strategy='dap'})<CR>",
+				desc = "[t]est [d]ebug",
+			},
+			{
+				"<leader>ts",
+				"<cmd>lua require('neotest').run.stop()<CR>",
+				desc = "[t]est [s]top",
+			},
+			{
+				"<leader>to",
+				"<cmd>lua require('neotest').summary.toggle()<CR>",
+				desc = "[t]est [o]utput",
+			},
 		},
 	},
-	config = function()
-		require("neotest").setup({
-			adapters = {
-				require("neotest-go"),
-				require("neotest-rust")({
-					args = { "--no-capture" },
-					dap_adapter = "lldb",
-				}),
-			},
-		})
-		local nmap = function(keys, func, desc)
-			vim.keymap.set("n", keys, func, {
-				desc = desc,
-			})
-		end
 
-		nmap("<leader>tn", function()
-			require("neotest").run.run()
-		end, "Run [n]earest [t]est")
-		nmap("<leader>tp", function()
-			require("neotest").output_panel.toggle()
-		end, "[t]est [p]anel")
-		nmap("<leader>tf", function()
-			require("neotest").run.run(vim.fn.expand("%"))
-		end, "Run [t]ests in current [f]ile")
-		nmap("<leader>td", function()
-			require("neotest").run.run({
-				strategy = "dap",
-			})
-		end, "[D]ebug nearest [t]est")
-		nmap("<leader>ts", function()
-			require("neotest").run.stop()
-		end, "[S]top [t]est")
-		nmap("<leader>to", function()
-			require("neotest").summary.toggle()
-		end, "Toggle [t]ests [o]utline")
-	end,
+	{
+		"andythigpen/nvim-coverage",
+		ft = { "go" },
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {
+			-- https://github.com/andythigpen/nvim-coverage/blob/main/doc/nvim-coverage.txt
+			auto_reload = true,
+			lang = {
+				go = {
+					coverage_file = vim.fn.getcwd() .. "/coverage.out",
+				},
+			},
+		},
+	},
 }

@@ -19,7 +19,7 @@ local on_attach = function(client, bufnr)
 	end
 
 	nmap("<leader>lr", function()
-		require("scripts.renamer").open()
+		vim.lsp.buf.rename()
 	end, "Rename")
 	nmap("<leader>ca", function()
 		vim.lsp.buf.code_action({})
@@ -27,7 +27,7 @@ local on_attach = function(client, bufnr)
 
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 	nmap("gr", function()
-		require("telescope.builtin").lsp_references({ show_line = false })
+		require("telescope.builtin").lsp_references({ show_line = false, include_declaration = false })
 	end, "[G]oto [R]eferences")
 	nmap("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 	nmap("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
@@ -98,10 +98,10 @@ local servers = {
 	"biome",
 	"svelte",
 	"pyright",
-	"nixd",
+	"nil_ls",
 	"eslint",
 	"templ",
-	"bufls",
+	"buf_ls",
 }
 
 for _, lsp in ipairs(servers) do
@@ -120,7 +120,7 @@ lspconfig.gopls.setup({
 	flags = { debounce_text_changes = 200 },
 })
 
-lspconfig.tsserver.setup({
+lspconfig.ts_ls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	init_options = {
@@ -134,13 +134,6 @@ lspconfig.htmx.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	filetypes = { "html" },
-})
-
-lspconfig.tailwindcss.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = { "templ", "astro", "javascript", "typescript", "react" },
-	init_options = { userLanguages = { templ = "html" } },
 })
 
 lspconfig.jsonls.setup({

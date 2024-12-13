@@ -9,7 +9,15 @@ return {
 				git_ignored = false,
 				git_clean = false,
 				exclude = {},
-				custom = { "^\\.git$", "^\\.direnv$", "^.parcel-cache$", "^node_modules$", "\\.lock$", "\\.lockb$" },
+				custom = {
+					"^\\.git$",
+					"^\\.direnv$",
+					"^.parcel-cache$",
+					"^node_modules$",
+					"\\.lock$",
+					"\\.lockb$",
+					"\\.DS_store$",
+				},
 			},
 
 			disable_netrw = true,

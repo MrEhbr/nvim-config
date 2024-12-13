@@ -65,13 +65,16 @@ return {
 				},
 			},
 
-			extensions_list = { "fzf", "live_grep_args", "dap" },
+			extensions_list = { "fzf", "live_grep_args" },
 			extensions = {
 				fzf = {
 					fuzzy = true,
 					override_generic_sorter = true,
 					override_file_sorter = true,
 					case_mode = "smart_case",
+				},
+				["ui-select"] = {
+					require("telescope.themes").get_dropdown({}),
 				},
 
 				live_grep_args = {
@@ -142,15 +145,15 @@ return {
 		nmap("<leader>gs", "<cmd>Telescope git_status<CR>", "[g]it [s]tatus")
 		nmap("<leader>gb", "<cmd>Telescope git_branches<CR>", "[g]it [b]ranches")
 
-		nmap("<leader>ds", function()
-			require("telescope").extensions.dap.configurations({
-				language_filter = function(lang)
-					if lang == "dlv" and vim.bo.filetype == "go" then
-						return true
-					end
-					return lang == vim.bo.filetype
-				end,
-			})
-		end, "Dap configurations")
+		-- nmap("<leader>ds", function()
+		-- 	require("telescope").extensions.dap.configurations({
+		-- 		language_filter = function(lang)
+		-- 			if lang == "dlv" and vim.bo.filetype == "go" then
+		-- 				return true
+		-- 			end
+		-- 			return lang == vim.bo.filetype
+		-- 		end,
+		-- 	})
+		-- end, "Dap configurations")
 	end,
 }

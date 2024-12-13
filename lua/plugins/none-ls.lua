@@ -3,40 +3,11 @@ return {
 	event = "VeryLazy",
 	config = function()
 		local builtins = require("null-ls").builtins
-
-		local function biome_fmt()
-			local h = require("null-ls.helpers")
-			local methods = require("null-ls.methods")
-
-			local FORMATTING = methods.internal.FORMATTING
-
-			return h.make_builtin({
-				name = "biome_fmt",
-				method = FORMATTING,
-				filetypes = {
-					"javascript",
-					"javascriptreact",
-					"json",
-					"jsonc",
-					"typescript",
-					"typescript.tsx",
-					"typescriptreact",
-				},
-				generator_opts = {
-					command = "biome",
-					args = { "format", "--stdin-file-path", "$FILENAME", "--line-width", "160" },
-					to_stdin = true,
-				},
-				factory = h.formatter_factory,
-			})
-		end
-
 		local sources = {
 			-- Web Development
 			builtins.formatting.prettierd.with({
 				filetypes = { "svelte" },
 			}),
-			biome_fmt(),
 			builtins.formatting.rustywind.with({
 				filetypes = {
 					"javascript",
@@ -57,15 +28,13 @@ return {
 			builtins.diagnostics.fish,
 
 			-- Golang
-			builtins.formatting.gofumpt.with({
-				extra_args = { "-extra" },
+			builtins.formatting.golines.with({
+				extra_args = { "-m", "180", "--reformat-tags", "--base-formatter='gofumpt -extra'" },
 			}),
+
 			builtins.formatting.goimports,
 			builtins.formatting.goimports_reviser,
-			builtins.formatting.golines.with({
-				extra_args = { "-m", "250" },
-			}),
-			builtins.diagnostics.golangci_lint,
+			-- builtins.diagnostics.golangci_lint,
 			builtins.code_actions.gomodifytags,
 			-- PHP
 			builtins.formatting.pint.with({
@@ -101,6 +70,10 @@ return {
 			}),
 			-- Lua
 			builtins.formatting.stylua,
+
+			-- Markdown
+			builtins.formatting.cbfmt,
+			builtins.formatting.markdownlint,
 		}
 
 		local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
