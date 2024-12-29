@@ -24,6 +24,7 @@ return {
 					"lua-language-server",
 					-- Diagnostic
 					"eslint_d",
+					"harper-ls",
 					-- "golangci-lint",
 
 					-- Formatters

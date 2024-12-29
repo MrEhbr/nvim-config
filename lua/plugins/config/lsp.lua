@@ -6,6 +6,21 @@ local function lspSymbol(name, icon)
 	vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
 end
 
+local function filtered_lsp_implementations()
+	local opts = {
+		file_ignore_patterns = {
+			"%.pb%.go$", -- Ignore protobuf generated files
+			"/_test%.go$", -- Ignore test files (assuming they end with _test.go)
+			"/mocks?/", -- Ignore files in mock or mocks directories
+			"/generated/", -- Ignore files in generated directories
+			"%.gen%.go$", -- Ignore generated Go files (if they use this naming convention)
+		},
+		show_line = false,
+	}
+
+	require("telescope.builtin").lsp_implementations(opts)
+end
+
 local on_attach = function(client, bufnr)
 	local nmap = function(keys, func, desc)
 		if desc then
@@ -15,6 +30,7 @@ local on_attach = function(client, bufnr)
 		vim.keymap.set("n", keys, func, {
 			buffer = bufnr,
 			desc = desc,
+			remap = false,
 		})
 	end
 
@@ -29,7 +45,7 @@ local on_attach = function(client, bufnr)
 	nmap("gr", function()
 		require("telescope.builtin").lsp_references({ show_line = false, include_declaration = false })
 	end, "[G]oto [R]eferences")
-	nmap("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+	nmap("gi", filtered_lsp_implementations, "[G]oto [I]mplementation")
 	nmap("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 	nmap("<leader>ld", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
 	nmap("<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
@@ -118,6 +134,17 @@ lspconfig.gopls.setup({
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
 	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
 	flags = { debounce_text_changes = 200 },
+	gopls = {
+		formatting = {
+			gofumpt = true,
+		},
+		experimentalPostfixCompletions = true,
+		analyses = {
+			unusedparams = true,
+			shadow = true,
+		},
+		staticcheck = true,
+	},
 })
 
 lspconfig.ts_ls.setup({
@@ -192,6 +219,44 @@ lspconfig.lua_ls.setup({
 				},
 				maxPreload = 100000,
 				preloadFileSize = 10000,
+			},
+		},
+	},
+})
+
+lspconfig.harper_ls.setup({
+	enabled = false,
+	on_attach = on_attach,
+	capabilities = capabilities,
+
+	settings = {
+		["harper-ls"] = {
+			userDictPath = "~/.config/harper/dict.txt",
+			fileDictPath = "~/.config/harper/",
+
+			-- Severity can be "hint", "information", "warning", or "error".
+			diagnosticSeverity = "hint",
+
+			linters = {
+				spell_check = true,
+				spelled_numbers = false,
+				an_a = true,
+				sentence_capitalization = false,
+				unclosed_quotes = true,
+				wrong_quotes = false,
+				long_sentences = true,
+				repeated_words = true,
+				spaces = true,
+				matcher = true,
+				correct_number_suffix = true,
+				number_suffix_capitalization = true,
+				multiple_sequential_pronouns = true,
+				linking_verbs = false,
+				avoid_curses = true,
+				terminating_conjunctions = true,
+			},
+			codeActions = {
+				forceStable = true,
 			},
 		},
 	},

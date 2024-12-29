@@ -57,7 +57,7 @@ return {
 					-- "160",
 				},
 			}),
-			-- proto
+			-- protobuf
 			builtins.formatting.buf,
 			-- Nix
 			builtins.formatting.nixpkgs_fmt,
