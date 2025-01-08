@@ -63,3 +63,7 @@ vim.keymap.set("n", "<M-S-Right>", "<cmd>vertical resize +2<cr>", { desc = "Incr
 
 -- Close current split
 vim.keymap.set("n", "<leader>q", ":q<CR>", { noremap = true, silent = true })
+
+-- Quickfix list
+vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>", { desc = "Next quickfix" })
+vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>", { desc = "Previous quickfix" })

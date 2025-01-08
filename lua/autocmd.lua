@@ -52,6 +52,14 @@ autocmd("FileType", {
 	command = "nnoremap <buffer><silent> q <cmd>close!<CR>",
 })
 
+autocmd("Filetype", {
+	pattern = "sql",
+	callback = function()
+		vim.keymap.del("i", "<left>", { buffer = true })
+		vim.keymap.del("i", "<right>", { buffer = true })
+	end,
+})
+
 -- local inline_fold = vim.api.nvim_create_augroup("inline_fold", {})
 --
 -- autocmd({ "BufEnter", "BufWritePost", "TextChanged", "InsertLeave" }, {

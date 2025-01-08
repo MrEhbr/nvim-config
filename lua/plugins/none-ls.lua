@@ -29,7 +29,7 @@ return {
 
 			-- Golang
 			builtins.formatting.golines.with({
-				extra_args = { "-m", "180", "--reformat-tags", "--base-formatter='gofumpt -extra'" },
+				extra_args = { "-m", "180", "--reformat-tags", "--base-formatter=gofumpt" },
 			}),
 
 			builtins.formatting.goimports,

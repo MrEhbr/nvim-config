@@ -115,9 +115,9 @@ return {
 		dap.listeners.after.event_initialized["me"] = function()
 			for _, buf in pairs(vim.api.nvim_list_bufs()) do
 				local keymaps = vim.api.nvim_buf_get_keymap(buf, "n")
-				for _, keymap in pairs(keymaps) do
-					if keymap.lhs == "K" then
-						table.insert(keymap_restore, keymap)
+				for _, km in pairs(keymaps) do
+					if km.lhs == "K" then
+						table.insert(keymap_restore, km)
 						vim.api.nvim_buf_del_keymap(buf, "n", "K")
 					end
 				end
@@ -126,14 +126,8 @@ return {
 		end
 
 		dap.listeners.after.event_terminated["me"] = function()
-			for _, keymap in pairs(keymap_restore) do
-				vim.api.nvim_buf_set_keymap(
-					keymap.buffer,
-					keymap.mode,
-					keymap.lhs,
-					keymap.rhs,
-					{ silent = keymap.silent == 1 }
-				)
+			for _, km in pairs(keymap_restore) do
+				vim.api.nvim_buf_set_keymap(km.buffer, km.mode, km.lhs, km.rhs or "", { silent = km.silent == 1 })
 			end
 			keymap_restore = {}
 		end

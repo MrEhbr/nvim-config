@@ -61,6 +61,14 @@ return {
 				require("luasnip.loaders.from_vscode").lazy_load()
 			end,
 		},
+		{
+			"MattiasMTS/cmp-dbee",
+			dependencies = {
+				{ "kndndrj/nvim-dbee" },
+			},
+			ft = "sql", -- optional but good to have
+			opts = {}, -- needed
+		},
 		"saadparwaiz1/cmp_luasnip",
 
 		-- command line
@@ -132,6 +140,7 @@ return {
 				{ name = "calc" },
 				{ name = "spell", keyword_length = 4 },
 				{ name = "rg", keyword_length = 4, dup = 0, max_item_count = 5 },
+				{ "cmp-dbee" },
 			},
 
 			snippet = {
@@ -191,6 +200,13 @@ return {
 		cmp.setup.cmdline("/", {
 			mapping = cmp.mapping.preset.cmdline({}),
 			sources = {
+				{ name = "buffer" },
+			},
+		})
+
+		cmp.setup.filetype({ "sql" }, {
+			sources = {
+				{ name = "vim-dadbod-completion" },
 				{ name = "buffer" },
 			},
 		})

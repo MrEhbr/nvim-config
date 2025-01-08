@@ -144,16 +144,5 @@ return {
 		nmap("<leader>gc", "<cmd>Telescope git_commits<CR>", "[g]it [c]ommits")
 		nmap("<leader>gs", "<cmd>Telescope git_status<CR>", "[g]it [s]tatus")
 		nmap("<leader>gb", "<cmd>Telescope git_branches<CR>", "[g]it [b]ranches")
-
-		-- nmap("<leader>ds", function()
-		-- 	require("telescope").extensions.dap.configurations({
-		-- 		language_filter = function(lang)
-		-- 			if lang == "dlv" and vim.bo.filetype == "go" then
-		-- 				return true
-		-- 			end
-		-- 			return lang == vim.bo.filetype
-		-- 		end,
-		-- 	})
-		-- end, "Dap configurations")
 	end,
 }
