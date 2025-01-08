@@ -6,20 +6,13 @@ local function lspSymbol(name, icon)
 	vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
 end
 
-local function filtered_lsp_implementations()
-	local opts = {
-		file_ignore_patterns = {
-			"%.pb%.go$", -- Ignore protobuf generated files
-			"/_test%.go$", -- Ignore test files (assuming they end with _test.go)
-			"/mocks?/", -- Ignore files in mock or mocks directories
-			"/generated/", -- Ignore files in generated directories
-			"%.gen%.go$", -- Ignore generated Go files (if they use this naming convention)
-		},
-		show_line = false,
-	}
-
-	require("telescope.builtin").lsp_implementations(opts)
-end
+local file_ignore_patterns = {
+	"%.pb%.go$", -- Ignore protobuf generated files
+	"/_test%.go$", -- Ignore test files (assuming they end with _test.go)
+	"/mocks?/", -- Ignore files in mock or mocks directories
+	"/generated/", -- Ignore files in generated directories
+	"%.gen%.go$", -- Ignore generated Go files (if they use this naming convention)
+}
 
 local on_attach = function(client, bufnr)
 	local nmap = function(keys, func, desc)
@@ -43,9 +36,18 @@ local on_attach = function(client, bufnr)
 
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 	nmap("gr", function()
-		require("telescope.builtin").lsp_references({ show_line = false, include_declaration = false })
+		require("telescope.builtin").lsp_references({
+			show_line = false,
+			include_declaration = false,
+			file_ignore_patterns = file_ignore_patterns,
+		})
 	end, "[G]oto [R]eferences")
-	nmap("gi", filtered_lsp_implementations, "[G]oto [I]mplementation")
+	nmap("gi", function()
+		require("telescope.builtin").lsp_implementations({
+			show_line = false,
+			file_ignore_patterns = file_ignore_patterns,
+		})
+	end, "[G]oto [I]mplementation")
 	nmap("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 	nmap("<leader>ld", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
 	nmap("<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
@@ -139,10 +141,6 @@ lspconfig.gopls.setup({
 			gofumpt = true,
 		},
 		experimentalPostfixCompletions = true,
-		analyses = {
-			unusedparams = true,
-			shadow = true,
-		},
 		staticcheck = true,
 	},
 })
