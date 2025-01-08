@@ -6,3 +6,10 @@
 [
  "$"
 ] @keyword
+
+(variadic_parameter
+  "..." @operator
+  name: (variable_name) @variable)
+
+(simple_parameter
+  name: (variable_name) @variable)
