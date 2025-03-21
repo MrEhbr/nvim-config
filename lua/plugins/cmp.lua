@@ -43,7 +43,6 @@ local kind_icons = {
 
 return {
 	"hrsh7th/nvim-cmp",
-	event = "InsertEnter",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 		"hrsh7th/cmp-nvim-lsp",
@@ -140,7 +139,6 @@ return {
 				{ name = "calc" },
 				{ name = "spell", keyword_length = 4 },
 				{ name = "rg", keyword_length = 4, dup = 0, max_item_count = 5 },
-				{ "cmp-dbee" },
 			},
 
 			snippet = {
