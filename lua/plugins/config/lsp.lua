@@ -224,7 +224,7 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.harper_ls.setup({
-	enabled = false,
+	enabled = true,
 	on_attach = on_attach,
 	capabilities = capabilities,
 
@@ -235,6 +235,7 @@ lspconfig.harper_ls.setup({
 
 			-- Severity can be "hint", "information", "warning", or "error".
 			diagnosticSeverity = "hint",
+			isolateEnglish = true,
 
 			linters = {
 				spell_check = true,
