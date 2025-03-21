@@ -1,11 +1,6 @@
 local lspconfig = require("lspconfig")
 local util = require("lspconfig/util")
 
-local function lspSymbol(name, icon)
-	local hl = "DiagnosticSign" .. name
-	vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
-end
-
 local file_ignore_patterns = {
 	"%.pb%.go$", -- Ignore protobuf generated files
 	"/_test%.go$", -- Ignore test files (assuming they end with _test.go)
@@ -14,51 +9,50 @@ local file_ignore_patterns = {
 	"%.gen%.go$", -- Ignore generated Go files (if they use this naming convention)
 }
 
-local on_attach = function(client, bufnr)
-	local nmap = function(keys, func, desc)
-		if desc then
-			desc = "LSP: " .. desc
-		end
+local function keymap(mode, l, r, desc)
+	opts = {}
+	opts.buffer = true
+	opts.desc = string.format("Lsp: %s", desc)
+	vim.keymap.set(mode, l, r, opts)
+end
 
-		vim.keymap.set("n", keys, func, {
-			buffer = bufnr,
-			desc = desc,
-			remap = false,
-		})
-	end
-
-	nmap("<leader>lr", function()
+local on_attach = function(_, _)
+	keymap("n", "<leader>lr", function()
 		vim.lsp.buf.rename()
 	end, "Rename")
-	nmap("<leader>ca", function()
+	keymap("n", "<leader>ca", function()
 		vim.lsp.buf.code_action({})
 	end, "[C]ode [A]ction")
 
-	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-	nmap("gr", function()
+	keymap("n", "gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+	keymap("n", "gr", function()
 		require("telescope.builtin").lsp_references({
 			show_line = false,
 			include_declaration = false,
 			file_ignore_patterns = file_ignore_patterns,
 		})
 	end, "[G]oto [R]eferences")
-	nmap("gi", function()
+	keymap("n", "gi", function()
 		require("telescope.builtin").lsp_implementations({
 			show_line = false,
 			file_ignore_patterns = file_ignore_patterns,
 		})
 	end, "[G]oto [I]mplementation")
-	nmap("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
-	nmap("<leader>ld", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-	nmap("<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-	nmap("<leader>fm", function()
+	keymap("n", "<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
+	keymap("n", "<leader>ld", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+	keymap("n", "<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+	keymap("n", "<leader>fm", function()
 		vim.lsp.buf.format({ async = true })
 	end, "[f]or[m]at currenc buffer")
 
-	nmap("K", "<cmd>:lua vim.lsp.buf.hover() <CR>", "Hover Documentation")
-	-- nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+	keymap("n", "K", function()
+		vim.lsp.buf.hover({ border = "single" })
+	end, "Hover Documentation")
+	keymap("i", "<C-s>", function()
+		vim.lsp.buf.signature_help({ border = "single", focusable = false, relative = "cursor" })
+	end, { desc = "Hover" })
 
-	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+	keymap("n", "gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -86,28 +80,28 @@ capabilities.textDocument.foldingRange = {
 	lineFoldingOnly = true,
 }
 
-lspSymbol("Error", "󰅙")
-lspSymbol("Info", "󰋼")
-lspSymbol("Hint", "󰌵")
-lspSymbol("Warn", "")
+vim.diagnostic.config({
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = " ",
+			[vim.diagnostic.severity.WARN] = " ",
+			[vim.diagnostic.severity.INFO] = "󰋼 ",
+			[vim.diagnostic.severity.HINT] = "󰌵 ",
+		},
+		numhl = {
+			[vim.diagnostic.severity.ERROR] = "",
+			[vim.diagnostic.severity.WARN] = "",
+			[vim.diagnostic.severity.HINT] = "",
+			[vim.diagnostic.severity.INFO] = "",
+		},
+	},
+})
 
 vim.diagnostic.config({
-	virtual_text = {
-		prefix = "",
-	},
 	signs = true,
 	underline = true,
 	update_in_insert = false,
 	virtual_lines = true,
-})
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	border = "single",
-})
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-	border = "single",
-	focusable = false,
-	relative = "cursor",
 })
 
 -- Provide default configuration for the following LSP servers:
@@ -224,7 +218,7 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.harper_ls.setup({
-	enabled = false,
+	enabled = true,
 	on_attach = on_attach,
 	capabilities = capabilities,
 
@@ -235,6 +229,7 @@ lspconfig.harper_ls.setup({
 
 			-- Severity can be "hint", "information", "warning", or "error".
 			diagnosticSeverity = "hint",
+			isolateEnglish = true,
 
 			linters = {
 				spell_check = true,

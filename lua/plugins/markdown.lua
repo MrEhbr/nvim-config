@@ -3,6 +3,7 @@ return {
 		"epwalsh/obsidian.nvim",
 		version = "*", -- recommended, use latest release instead of latest commit
 		lazy = true,
+		enable = false,
 		ft = "markdown",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -177,6 +178,13 @@ return {
 		"MeanderingProgrammer/render-markdown.nvim",
 		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
 
-		opts = {},
+		opts = {
+			code = {
+				enabled = true,
+				disable_background = true,
+				border = "none",
+				-- highlight = "",
+			},
+		},
 	},
 }
