@@ -119,6 +119,7 @@ return {
 					["P"] = { "toggle_preview", config = { use_float = false } },
 					["<C-w>"] = "close_node",
 					["o"] = "system_open",
+					["z"] = "noop",
 				},
 			},
 			commands = {

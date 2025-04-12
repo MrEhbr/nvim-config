@@ -98,10 +98,11 @@ vim.diagnostic.config({
 })
 
 vim.diagnostic.config({
-	signs = true,
+	float = { border = "rounded" },
+	virtual_text = false,
+	virtual_lines = false,
 	underline = true,
 	update_in_insert = false,
-	virtual_lines = true,
 })
 
 -- Provide default configuration for the following LSP servers:

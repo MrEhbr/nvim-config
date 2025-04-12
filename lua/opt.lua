@@ -67,10 +67,6 @@ end
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
 
-vim.diagnostic.config({
-	float = { border = "rounded" },
-})
-
 -- Folding
 vim.o.fillchars = [[eob: ,fold: ,foldopen: ,foldsep: ,foldclose:]]
 vim.o.foldcolumn = "1"

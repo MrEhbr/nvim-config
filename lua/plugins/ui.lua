@@ -14,6 +14,9 @@ return {
 			dim = { enabled = true },
 			-- statuscolumn = { enabled = true },
 			-- words = { enabled = true },
+			styles = {
+				input = { relative = "cursor", row = -3, col = 0 },
+			},
 		},
 	},
 	{
