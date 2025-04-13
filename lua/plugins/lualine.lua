@@ -21,6 +21,7 @@ return {
 			theme = "auto",
 			component_separators = "|",
 			section_separators = { left = "", right = "" },
+			globalstatus = true,
 		},
 		sections = {
 			lualine_a = {
@@ -31,24 +32,26 @@ return {
 				{
 					"b:gitsigns_head",
 					icon = "",
-					fmt = function(str)
-						if vim.api.nvim_strwidth(str) > 30 then
-							return ("%s..."):format(str:sub(1, 29))
-						end
-
-						return str
-					end,
 				},
 			},
 			lualine_c = {
-				{ "diff", source = diff_source, symbols = { added = " ", modified = " ", removed = " " } },
+				{
+					"diff",
+					source = diff_source,
+					symbols = { added = " ", modified = " ", removed = " " },
+					colored = true,
+					diff_color = {
+						added = { fg = "#98be65" },
+						modified = { fg = "#ecbe7b" },
+						removed = { fg = "#ec5f67" },
+					},
+				},
 			},
 
 			lualine_x = {
 				{
 					"diagnostics",
-					sources = { "nvim_diagnostic" },
-					symbols = { error = " ", warn = " ", info = " ", hint = " " },
+					color = { gui = "bold" },
 				},
 				{
 					"copilot",
@@ -77,11 +80,11 @@ return {
 					show_loading = true,
 				},
 			},
+			lualine_y = { "filetype" },
+			lualine_z = {
+				{ "progress", separator = { right = "" } },
+			},
 		},
-	},
-	lualine_y = { "filetype" },
-	lualine_z = {
-		{ "progress", icon = "", separator = { right = "" } },
 		inactive_sections = {
 			lualine_a = { "filename" },
 			lualine_b = {},
@@ -91,7 +94,5 @@ return {
 			lualine_z = { "location" },
 		},
 		tabline = {},
-		extensions = {},
-		extensions = { "nvim-tree", "nvim-dap-ui" },
 	},
 }

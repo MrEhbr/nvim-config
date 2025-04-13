@@ -16,7 +16,7 @@ local function keymap(mode, l, r, desc)
 	vim.keymap.set(mode, l, r, opts)
 end
 
-local on_attach = function(_, _)
+local on_attach = function(client, bufnr)
 	keymap("n", "<leader>lr", function()
 		vim.lsp.buf.rename()
 	end, "Rename")
@@ -43,8 +43,7 @@ local on_attach = function(_, _)
 	keymap("n", "<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
 	keymap("n", "<leader>fm", function()
 		vim.lsp.buf.format({ async = true })
-	end, "[f]or[m]at currenc buffer")
-
+	end, "[f]or[m]at current buffer")
 	keymap("n", "K", function()
 		vim.lsp.buf.hover({ border = "single" })
 	end, "Hover Documentation")
@@ -53,9 +52,26 @@ local on_attach = function(_, _)
 	end, { desc = "Hover" })
 
 	keymap("n", "gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+	-- Toggle inlay hints
+	keymap("n", "<leader>lh", function()
+		local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+		vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+	end, "Toggle Inlay Hints")
+
+	-- Enable inlay hints by default for supported languages
+	if client.server_capabilities.inlayHintProvider then
+		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+	end
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = vim.tbl_deep_extend("force", capabilities, {
+	offsetEncoding = { "utf-16" },
+	general = {
+		positionEncodings = { "utf-16" },
+	},
+})
 capabilities.textDocument.completion.completionItem = {
 	documentationFormat = { "markdown", "plaintext" },
 	snippetSupport = true,
@@ -116,6 +132,8 @@ local servers = {
 	"eslint",
 	"templ",
 	"buf_ls",
+	"ts_ls",
+	"htmx",
 }
 
 for _, lsp in ipairs(servers) do
@@ -139,22 +157,6 @@ lspconfig.gopls.setup({
 		experimentalPostfixCompletions = true,
 		staticcheck = true,
 	},
-})
-
-lspconfig.ts_ls.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	init_options = {
-		preferences = {
-			disableSuggestions = true,
-		},
-	},
-})
-
-lspconfig.htmx.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = { "html" },
 })
 
 lspconfig.jsonls.setup({
@@ -191,12 +193,6 @@ lspconfig.yamlls.setup({
 	capabilities = capabilities,
 })
 
-lspconfig.postgres_lsp.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = { "sql" },
-})
-
 lspconfig.lua_ls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -228,7 +224,6 @@ lspconfig.harper_ls.setup({
 			userDictPath = "~/.config/harper/dict.txt",
 			fileDictPath = "~/.config/harper/",
 
-			-- Severity can be "hint", "information", "warning", or "error".
 			diagnosticSeverity = "hint",
 			isolateEnglish = true,
 
@@ -252,6 +247,91 @@ lspconfig.harper_ls.setup({
 			},
 			codeActions = {
 				forceStable = true,
+			},
+		},
+	},
+})
+
+lspconfig.rust_analyzer.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+		["rust-analyzer"] = {
+			checkOnSave = {
+				command = "clippy",
+			},
+			cargo = {
+				allFeatures = true,
+				buildScripts = {
+					enable = true,
+				},
+			},
+			procMacro = {
+				enable = true,
+			},
+			inlayHints = {
+				bindingModeHints = { enable = true },
+				chainingHints = { enable = true },
+				closingBraceHints = { enable = true, minLines = 25 },
+				closureReturnTypeHints = { enable = "always" },
+				lifetimeElisionHints = { enable = "always", useParameterNames = true },
+				parameterHints = { enable = true },
+				typeHints = { enable = true },
+			},
+		},
+	},
+})
+
+-- Add tailwindcss server configuration
+lspconfig.tailwindcss.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	filetypes = {
+		"html",
+		"css",
+		"scss",
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"svelte",
+		"vue",
+		"templ",
+	},
+	init_options = {
+		userLanguages = {
+			templ = "html",
+		},
+	},
+})
+
+-- Add TypeScript-specific inlay hints configuration
+lspconfig.ts_ls.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+		typescript = {
+			inlayHints = {
+				includeInlayParameterNameHints = "all",
+				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayVariableTypeHints = true,
+				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
+			},
+		},
+		javascript = {
+			inlayHints = {
+				includeInlayParameterNameHints = "all",
+				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayVariableTypeHints = true,
+				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
 			},
 		},
 	},

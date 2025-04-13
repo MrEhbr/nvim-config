@@ -15,7 +15,6 @@ return {
 				mode = "buffers",
 				numbers = "none",
 				close_command = "Bdelete! %d",
-				--= right_mouse_command = "Bdelete! %d",
 				left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
 				middle_mouse_command = nil,
 				indicator_icon = nil,
@@ -30,7 +29,6 @@ return {
 				tab_size = 21,
 				diagnostics = false,
 				diagnostics_update_in_insert = false,
-				-- offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
 				show_buffer_icons = true,
 				show_buffer_close_icons = false,
 				show_close_icon = true,

@@ -3,38 +3,38 @@ return {
 		"nvim-neotest/neotest",
 		event = "VeryLazy",
 		dependencies = {
+			"nvim-neotest/nvim-nio",
+			"nvim-lua/plenary.nvim",
+			"antoinemadec/FixCursorHold.nvim",
+			"nvim-treesitter/nvim-treesitter",
+
+			"nvim-neotest/neotest-plenary",
+			"nvim-neotest/neotest-vim-test",
+
 			{
-				"nvim-neotest/nvim-nio",
-				"nvim-lua/plenary.nvim",
-				"antoinemadec/FixCursorHold.nvim",
-				"nvim-treesitter/nvim-treesitter",
-
-				"nvim-neotest/neotest-plenary",
-				"nvim-neotest/neotest-vim-test",
-				{ "fredrikaverpil/neotest-golang", version = "*" },
+				"fredrikaverpil/neotest-golang",
+				dependencies = {
+					{
+						"leoluz/nvim-dap-go",
+						opts = {},
+					},
+				},
+				branch = "main",
 			},
+			"rouge8/neotest-rust",
 		},
-
 		opts = function(_, opts)
 			opts.adapters = opts.adapters or {}
 			opts.adapters["neotest-golang"] = {
 				go_test_args = {
 					"-v",
-					"-count=1",
 					"-race",
-					"-parallel=1",
 					"-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
 				},
 			}
-			opts.discovery = {
-				enabled = false,
-				concurrent = 1,
-			}
-			opts.running = {
-				concurrent = true,
-			}
-			opts.summary = {
-				animated = true,
+			opts.adapters["neotest-rust"] = {
+				args = { "--no-capture" },
+				dap_adapter = "rust",
 			}
 		end,
 		config = function(_, opts)
@@ -67,39 +67,92 @@ return {
 				opts.adapters = adapters
 			end
 
-			-- Set up Neotest.
 			require("neotest").setup(opts)
 		end,
 		keys = {
 			{
-				"<leader>tn",
-				"<cmd>lua require('neotest').run.run()<CR>",
-				desc = "[t]est [n]earest",
-			},
-			{
-				"<leader>tp",
-				"<cmd>lua require('neotest').output_panel.toggle()<CR>",
-				desc = "[t]est [p]anel",
+				"<leader>ta",
+				function()
+					require("neotest").run.attach()
+				end,
+				desc = "[t]est [a]ttach",
 			},
 			{
 				"<leader>tf",
-				"<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",
-				desc = "[t]est [f]ile",
+				function()
+					require("neotest").run.run(vim.fn.expand("%"))
+				end,
+				desc = "[t]est run [f]ile",
 			},
 			{
-				"<leader>td",
-				"<cmd>lua require('neotest').run.run({strategy='dap'})<CR>",
-				desc = "[t]est [d]ebug",
+				"<leader>tA",
+				function()
+					require("neotest").run.run(vim.uv.cwd())
+				end,
+				desc = "[t]est [A]ll files",
+			},
+			{
+				"<leader>tS",
+				function()
+					require("neotest").run.run({ suite = true })
+				end,
+				desc = "[t]est [S]uite",
+			},
+			{
+				"<leader>tn",
+				function()
+					require("neotest").run.run()
+				end,
+				desc = "[t]est [n]earest",
+			},
+			{
+				"<leader>tl",
+				function()
+					require("neotest").run.run_last()
+				end,
+				desc = "[t]est [l]ast",
 			},
 			{
 				"<leader>ts",
-				"<cmd>lua require('neotest').run.stop()<CR>",
-				desc = "[t]est [s]top",
+				function()
+					require("neotest").summary.toggle()
+				end,
+				desc = "[t]est [s]ummary",
 			},
 			{
 				"<leader>to",
-				"<cmd>lua require('neotest').summary.toggle()<CR>",
+				function()
+					require("neotest").output.open({ enter = true, auto_close = true })
+				end,
 				desc = "[t]est [o]utput",
+			},
+			{
+				"<leader>tO",
+				function()
+					require("neotest").output_panel.toggle()
+				end,
+				desc = "[t]est [O]utput panel",
+			},
+			{
+				"<leader>tt",
+				function()
+					require("neotest").run.stop()
+				end,
+				desc = "[t]est [t]erminate",
+			},
+			{
+				"<leader>td",
+				function()
+					require("neotest").run.run({ suite = false, strategy = "dap" })
+				end,
+				desc = "Debug nearest test",
+			},
+			{
+				"<leader>tD",
+				function()
+					require("neotest").run.run({ vim.fn.expand("%"), strategy = "dap" })
+				end,
+				desc = "Debug current file",
 			},
 		},
 	},

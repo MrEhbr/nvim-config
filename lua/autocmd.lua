@@ -14,11 +14,9 @@ autocmd("VimResized", {
 	command = "tabdo wincmd =",
 })
 
-local augroup = vim.api.nvim_create_augroup("numbertoggle", {})
-
 autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
 	pattern = "*",
-	group = augroup,
+	group = vim.api.nvim_create_augroup("numbertoggle", {}),
 	callback = function()
 		if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
 			vim.opt.relativenumber = true
@@ -37,13 +35,11 @@ autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, 
 	end,
 })
 
-local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
-
 autocmd("TextYankPost", {
+	group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
 	callback = function()
 		vim.highlight.on_yank()
 	end,
-	group = highlight_group,
 	pattern = "*",
 })
 
@@ -60,9 +56,40 @@ autocmd("Filetype", {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+autocmd({ "CursorHold" }, {
 	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
 	callback = function()
 		vim.diagnostic.open_float(nil, { focus = false })
+	end,
+})
+
+-- Return to last edit position when opening files
+autocmd("BufReadPost", {
+	group = vim.api.nvim_create_augroup("LastPosition", { clear = true }),
+	pattern = "*",
+	callback = function()
+		if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
+			vim.cmd('normal! g`"')
+			vim.cmd("normal! zz")
+		end
+	end,
+})
+
+autocmd("CursorHold", {
+	group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true }),
+	pattern = "*",
+	callback = function()
+		if vim.lsp.buf.document_highlight then
+			vim.lsp.buf.document_highlight()
+		end
+	end,
+})
+autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
+	group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true }),
+	pattern = "*",
+	callback = function()
+		if vim.lsp.buf.clear_references then
+			vim.lsp.buf.clear_references()
+		end
 	end,
 })

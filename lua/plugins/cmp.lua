@@ -1,46 +1,3 @@
-local kind_icons = {
-	Namespace = "󰌗",
-	Text = "󰉿",
-	Method = "󰆧",
-	Function = "󰆧",
-	Constructor = "",
-	Field = "󰜢",
-	Variable = "󰀫",
-	Class = "󰠱",
-	Interface = "",
-	Module = "",
-	Property = "󰜢",
-	Unit = "󰑭",
-	Value = "󰎠",
-	Enum = "",
-	Keyword = "󰌋",
-	Snippet = "",
-	Color = "󰏘",
-	File = "󰈚",
-	Reference = "󰈇",
-	Folder = "󰉋",
-	EnumMember = "",
-	Constant = "󰏿",
-	Struct = "󰙅",
-	Event = "",
-	Operator = "󰆕",
-	TypeParameter = "󰊄",
-	Table = "",
-	Object = "󰅩",
-	Tag = "",
-	Array = "[]",
-	Boolean = "",
-	Number = "",
-	Null = "󰟢",
-	String = "󰉿",
-	Calendar = "",
-	Watch = "󰥔",
-	Package = "",
-	Copilot = "",
-	Codeium = "",
-	TabNine = "",
-}
-
 return {
 	"hrsh7th/nvim-cmp",
 	dependencies = {
@@ -61,19 +18,9 @@ return {
 				require("luasnip.loaders.from_vscode").lazy_load()
 			end,
 		},
-		{
-			"MattiasMTS/cmp-dbee",
-			dependencies = {
-				{ "kndndrj/nvim-dbee" },
-			},
-			ft = "sql", -- optional but good to have
-			opts = {}, -- needed
-		},
 		"saadparwaiz1/cmp_luasnip",
-
 		-- command line
 		"hrsh7th/cmp-cmdline",
-
 		-- search
 		"hrsh7th/cmp-buffer",
 	},
@@ -134,6 +81,7 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" },
 				{ name = "path", keyword_length = 2 },
+				{ name = "buffer", keyword_length = 3 },
 
 				{ name = "nvim_lua" },
 
@@ -160,19 +108,12 @@ return {
 			},
 			formatting = {
 				expandable_indicator = true,
-				fields = { "kind", "abbr", "menu" },
-				format = function(entry, vim_item)
-					local kind = lspkind.cmp_format({
-						mode = "symbol_text",
-						maxwidth = 70,
-						symbol_map = kind_icons,
-					})(entry, vim_item)
-					local strings = vim.split(kind.kind, "%s", { trimempty = true })
-					kind.kind = " " .. strings[1] .. " "
-					kind.menu = "    (" .. strings[2] .. ")"
-
-					return kind
-				end,
+				fields = { "abbr", "kind", "menu" },
+				format = lspkind.cmp_format({
+					mode = "symbol_text",
+					maxwidth = 70,
+					show_label = true,
+				}),
 			},
 			view = {
 				entries = { name = "custom", selection_order = "near_cursor" },

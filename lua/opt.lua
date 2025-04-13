@@ -3,6 +3,7 @@ local g = vim.g
 
 g.mapleader = " "
 g.maplocalleader = " "
+g.loaded_ruby_provider = 0
 
 -- Set highlight on search
 opt.hlsearch = true
@@ -20,7 +21,7 @@ opt.completeopt = "menuone,noselect"
 
 opt.relativenumber = true
 vim.opt_local.conceallevel = 2
-vim.filetype.add({ extension = { templ = "templ", iqdl = "iqdl" } })
+vim.filetype.add({ extension = { templ = "templ" } })
 
 opt.showmode = false
 

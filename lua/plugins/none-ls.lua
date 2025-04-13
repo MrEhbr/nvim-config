@@ -22,7 +22,6 @@ return {
 			}),
 			-- Shell
 			builtins.formatting.shfmt.with({
-				-- https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd
 				extra_args = { "-i", "2", "-ci" },
 			}),
 			builtins.diagnostics.fish,
