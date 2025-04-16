@@ -31,8 +31,7 @@ end
 M.get_connections = function()
 	local raw_conns = M.get_dbee_connection()
 	local sqlls_conns = {}
-	-- local default_connection = os.getenv("DBEE_DEFAULT_CONNECTION")
-	local default_connection = nil
+	local default_connection = os.getenv("DBEE_DEFAULT_CONNECTION")
 	for _, raw_conn in pairs(raw_conns) do
 		if raw_conn.url and raw_conn.type then
 			local connection = {
@@ -67,6 +66,7 @@ local function to_yaml(data)
 
 	return yaml_str
 end
+
 M.init_sqls_config = function()
 	local connections = M.get_connections()
 

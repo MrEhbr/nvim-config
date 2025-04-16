@@ -136,6 +136,7 @@ local servers = {
 	-- "htmx",
 	"lua_ls",
 	"intelephense",
+	"jdtls",
 }
 
 for _, lsp in ipairs(servers) do
