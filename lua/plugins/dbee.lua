@@ -25,7 +25,12 @@ return {
 				editor = {
 					mappings = {
 						{ key = "<leader>E", mode = "v", action = "run_selection", opts = { desc = "Run selection" } },
-						{ key = "<leader>E", mode = "n", action = "run_file", opts = { desc = "Run file" } },
+						-- {
+						-- 	key = "<leader>E",
+						-- 	mode = "n",
+						-- 	action = run_under_cursor,
+						-- 	opts = { desc = "Run under cursor" },
+						-- },
 					},
 				},
 			}

@@ -21,7 +21,7 @@ local on_attach = function(client, bufnr)
 		vim.lsp.buf.rename()
 	end, "Rename")
 	keymap("n", "<leader>ca", function()
-		vim.lsp.buf.code_action({})
+		vim.lsp.buf.code_action()
 	end, "[C]ode [A]ction")
 
 	keymap("n", "gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
@@ -41,9 +41,6 @@ local on_attach = function(client, bufnr)
 	keymap("n", "<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 	keymap("n", "<leader>ld", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
 	keymap("n", "<leader>lw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-	keymap("n", "<leader>fm", function()
-		vim.lsp.buf.format({ async = true })
-	end, "[f]or[m]at current buffer")
 	keymap("n", "K", function()
 		vim.lsp.buf.hover({ border = "single" })
 	end, "Hover Documentation")
@@ -65,7 +62,7 @@ local on_attach = function(client, bufnr)
 	end
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+local capabilities = require("blink.cmp").get_lsp_capabilities()
 capabilities = vim.tbl_deep_extend("force", capabilities, {
 	offsetEncoding = { "utf-16" },
 	general = {
@@ -153,22 +150,44 @@ lspconfig.intelephense.setup({
 })
 
 lspconfig.gopls.setup({
-	on_attach = function(client, bufnr)
-		on_attach(client, bufnr)
-		client.server_capabilities.documentFormattingProvider = false
-		client.server_capabilities.documentRangeFormattingProvider = false
-	end,
+	on_attach = on_attach,
 	capabilities = capabilities,
 	cmd = { "gopls" },
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
 	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
 	flags = { debounce_text_changes = 200 },
-	gopls = {
-		formatting = {
+	settings = {
+		gopls = {
 			gofumpt = true,
+			codelenses = {
+				gc_details = true,
+				generate = true,
+				regenerate_cgo = true,
+				run_govulncheck = true,
+				test = true,
+				tidy = true,
+				upgrade_dependency = true,
+				vendor = true,
+			},
+			hints = {
+				assignVariableTypes = false,
+				compositeLiteralFields = false,
+				compositeLiteralTypes = false,
+				constantValues = false,
+				functionTypeParameters = false,
+				parameterNames = false,
+				rangeVariableTypes = false,
+			},
+			analyses = {
+				useany = true,
+				modernize = true,
+			},
+			usePlaceholders = true,
+			completeUnimported = true,
+			staticcheck = true,
+			directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+			semanticTokens = false,
 		},
-		experimentalPostfixCompletions = true,
-		staticcheck = true,
 	},
 })
 
@@ -249,9 +268,7 @@ lspconfig.rust_analyzer.setup({
 	capabilities = capabilities,
 	settings = {
 		["rust-analyzer"] = {
-			checkOnSave = {
-				command = "clippy",
-			},
+			checkOnSave = true,
 			cargo = {
 				allFeatures = true,
 				buildScripts = {

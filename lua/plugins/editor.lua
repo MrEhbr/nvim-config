@@ -15,12 +15,6 @@ return {
 	},
 	{ "folke/which-key.nvim", lzay = false, opts = {} },
 	{
-		"kylechui/nvim-surround",
-		branch = "main",
-		event = "VeryLazy",
-		config = true,
-	},
-	{
 		"RRethy/vim-illuminate",
 	},
 	{

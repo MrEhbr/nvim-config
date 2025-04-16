@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 -- Define signs with consolidated function calls
 local signs = {
 	DapBreakpoint = { text = "●", texthl = "DapBreakpoint" },
@@ -6,10 +7,57 @@ local signs = {
 	DapStopped = { text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" },
 	DapBreakpointRejected = { text = "", linehl = "DapBreakpointRejected", numhl = "DapBreakpointRejected" },
 }
+-- Define custom signs for DAP breakpoints and states
 for name, opts in pairs(signs) do
 	vim.fn.sign_define(name, opts)
 end
 
+local function get_arguments(callback)
+	vim.ui.input({ prompt = "Args: " }, function(input)
+		local args = vim.split(input or "", " ")
+		callback(args)
+	end)
+end
+
+local function go_configurations(dap)
+	dap.configurations.go = {
+		{
+			type = "go",
+			name = "Debug",
+			request = "launch",
+			program = "${file}",
+		},
+		{
+			type = "go",
+			name = "Debug (Arguments)",
+			request = "launch",
+			program = "${file}",
+			args = function(callback)
+				get_arguments(callback)
+			end,
+		},
+		{
+			type = "go",
+			name = "Debug Package",
+			request = "launch",
+			program = "${fileDirname}",
+		},
+		{
+			type = "go",
+			name = "Attach",
+			mode = "local",
+			request = "attach",
+			processId = require("dap.utils").pick_process,
+		},
+		{
+			type = "go",
+			name = "Debug test",
+			request = "launch",
+			mode = "test",
+			program = "./${relativeFileDirname}",
+		},
+	}
+end
 return {
 	{
 		"mfussenegger/nvim-dap",
@@ -20,16 +68,10 @@ return {
 				"MrEhbr/dap-rust.nvim",
 				ft = "rust",
 				config = function()
-					local mason_registry = require("mason-registry")
-					local codelldb = mason_registry.get_package("codelldb")
-
-					local extension_path = codelldb:get_install_path() .. "/extension/"
-					local codelldb_path = extension_path .. "adapter/codelldb"
-					local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
 					require("dap-rust").setup({
 						codelldb = {
-							path = codelldb_path,
-							lib_path = liblldb_path,
+							path = vim.fn.expand("$MASON/bin/codelldb"),
+							lib_path = vim.fn.expand("$MASON/share/codelldb/lldb/lib/liblldb.dylib"),
 						},
 					})
 				end,
@@ -46,7 +88,11 @@ return {
 			{
 				"<leader>dB",
 				function()
-					require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+					Snacks.input.input({
+						prompt = "Breakpoint condition: ",
+					}, function(input)
+						require("dap").set_breakpoint(input)
+					end)
 				end,
 				desc = "[d]ebug [B]reakpoint",
 			},
@@ -158,6 +204,7 @@ return {
 		},
 		config = function(_, _)
 			local dap = require("dap")
+			go_configurations(dap)
 			local configurations = require("dap.ext.vscode").getconfigs(vim.fn.getcwd() .. "/.run/launch.json")
 
 			for _, config in ipairs(configurations) do
@@ -181,6 +228,10 @@ return {
 		event = "VeryLazy",
 		opts = {
 			winbar = {
+				controls = {
+					position = "left",
+					enabled = true,
+				},
 				sections = { "watches", "scopes", "breakpoints", "repl" },
 				default_section = "scopes",
 			},
@@ -216,6 +267,25 @@ return {
 	},
 	{
 		"theHamsta/nvim-dap-virtual-text",
-		opts = {},
+		config = function()
+			require("nvim-dap-virtual-text").setup({
+				enabled = false,
+				enabled_commands = true,
+				highlight_changed_variables = true,
+				highlight_new_as_changed = true,
+				show_stop_reason = false,
+				commented = false,
+				only_first_definition = true,
+				all_references = false,
+				clear_on_continue = true,
+				virt_text_pos = "eol",
+
+				-- experimental features:
+				all_frames = false, -- Show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+				virt_lines = true, -- Show virtual lines instead of virtual text (will flicker!)
+				virt_text_win_col = nil, -- Position the virtual text at a fixed window column (starting from the first text column) ,
+				-- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
+			})
+		end,
 	},
 }

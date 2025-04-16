@@ -6,7 +6,7 @@ return {
 			ensure_installed = {
 				-- LSP
 				"marksman",
-				"phpactor",
+				"intelephense",
 				"biome",
 				"svelte-language-server",
 				"pyright",
@@ -37,7 +37,7 @@ return {
 				"goimports-reviser",
 				"golines",
 				"gomodifytags",
-				"pint",
+				-- "pint",
 				"buf",
 				"nixpkgs-fmt",
 				"black",

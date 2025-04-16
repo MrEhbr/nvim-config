@@ -20,26 +20,9 @@ vim.keymap.set("n", "<C-c>", "<cmd> %y+ <CR>", { desc = "Copy whole file" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { nowait = true, desc = "Page Down and Center" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { nowait = true, desc = "Page Up and Center" })
 
--- Better navigation in insert mode
-vim.keymap.set("i", "<C-h>", "<Left>", { desc = "Move left" })
-vim.keymap.set("i", "<C-l>", "<Right>", { desc = "Move right" })
-vim.keymap.set("i", "<C-j>", "<Down>", { desc = "Move down" })
-vim.keymap.set("i", "<C-k>", "<Up>", { desc = "Move up" })
-
 -- Go to beginning and end of line in insert mode
 vim.keymap.set("i", "<C-b>", "<ESC>^i", { desc = "Beginning of line" })
 vim.keymap.set("i", "<C-e>", "<End>", { desc = "End of line" })
-
--- Navigating wrapped lines
-vim.keymap.set({ "n", "x" }, "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { desc = "Move down", expr = true })
-vim.keymap.set({ "n", "x" }, "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { desc = "Move up", expr = true })
-vim.keymap.set({ "n", "v" }, "<Up>", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { desc = "Move up", expr = true })
-vim.keymap.set(
-	{ "n", "v" },
-	"<Down>",
-	'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',
-	{ desc = "Move down", expr = true }
-)
 
 -----------------------------------------------------------------------------------
 -- Window Management
