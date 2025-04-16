@@ -32,7 +32,7 @@ return {
 		},
 		build = "make tiktoken",
 		keys = {
-			{ "<M-c>", "<cmd>CopilotChat<cr>", desc = "CopilotChat" },
+			{ "<M-c>", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat" },
 		},
 		opts = {
 			debug = false,

@@ -22,6 +22,7 @@ return {
 				"yaml-language-server",
 				"lua-language-server",
 				"rust-analyzer",
+				"sqls",
 				-- Diagnostic
 				"eslint_d",
 				"harper-ls",

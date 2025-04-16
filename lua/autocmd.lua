@@ -26,7 +26,7 @@ autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }
 
 autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
 	pattern = "*",
-	group = augroup,
+	group = vim.api.nvim_create_augroup("numbertoggle", {}),
 	callback = function()
 		if vim.o.nu then
 			vim.opt.relativenumber = false
@@ -46,14 +46,6 @@ autocmd("TextYankPost", {
 autocmd("FileType", {
 	pattern = "dap-float",
 	command = "nnoremap <buffer><silent> q <cmd>close!<CR>",
-})
-
-autocmd("Filetype", {
-	pattern = "sql",
-	callback = function()
-		vim.keymap.del("i", "<left>", { buffer = true })
-		vim.keymap.del("i", "<right>", { buffer = true })
-	end,
 })
 
 autocmd({ "CursorHold" }, {

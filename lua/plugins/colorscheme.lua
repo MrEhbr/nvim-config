@@ -46,6 +46,13 @@ return {
 					DapLogPoint = { fg = "#61afef", bg = "#31353f", bold = true },
 					DapStopped = { fg = "#98c379", bg = "#31353f", bold = true },
 					DapLine = { bg = theme.diff.text },
+
+					Pmenu = { fg = theme.ui.shade0, bg = "NONE" },
+					PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+					PmenuSbar = { bg = theme.ui.bg_m1 },
+					PmenuThumb = { bg = "#C0A36E" },
+					BlinkCmpMenuBorder = { fg = "", bg = "" },
+					CursorLineNr = { fg = colors.palette.sakuraPink, bg = "NONE" },
 				}
 			end,
 			theme = "wave",

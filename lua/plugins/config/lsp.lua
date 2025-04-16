@@ -193,27 +193,6 @@ lspconfig.yamlls.setup({
 	capabilities = capabilities,
 })
 
-lspconfig.lua_ls.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-
-	settings = {
-		Lua = {
-			diagnostics = {
-				globals = { "vim" },
-			},
-			workspace = {
-				library = {
-					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-					[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-				},
-				maxPreload = 100000,
-				preloadFileSize = 10000,
-			},
-		},
-	},
-})
-
 lspconfig.harper_ls.setup({
 	enabled = true,
 	on_attach = on_attach,
@@ -337,6 +316,45 @@ lspconfig.ts_ls.setup({
 	},
 })
 
+lspconfig.sqls.setup({
+	on_attach = function(client, bufnr)
+		require("sqls").on_attach(client, bufnr)
+		on_attach(client, bufnr)
+		client.server_capabilities.executeCommandProvider = false
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+	end,
+	capabilities = capabilities,
+})
+
+-- local filepath = vim.fs.joinpath(vim.g.db_ui_save_location, "connections.json")
+--          local file = io.open(filepath, "r")
+--          local connections = {}
+--          if file then
+--            connections = vim.json.decode(file:read("*a"))
+--            file:close()
+--          end
+--          if #connections == 0 then
+--            return true
+--          end
+--
+--          for _, conn in ipairs(connections) do
+--            conn.alias = conn.name
+--            conn.driver = conn.url:sub(0, conn.url:find(":") - 1)
+--            conn.dataSourceName = conn.url
+--            conn.name = nil
+--            conn.url = nil
+--          end
+--
+--          require("lspconfig").sqls.setup({
+--            autostart = false,
+--            settings = {
+--              sqls = {
+--                connections = connections,
+--              },
+--            },
+--          })
+--          return true
 return {
 	on_attach = on_attach,
 	capabilities = capabilities,
