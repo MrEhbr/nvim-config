@@ -8,15 +8,6 @@ autocmd("FileType", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("Filetype", {
-	group = vim.api.nvim_create_augroup("sql_keymap", {}),
-	pattern = "sql",
-	callback = function()
-		vim.keymap.del('i', '<left>', { buffer = true })
-		vim.keymap.del('i', '<right>', { buffer = true })
-	end
-})
-
 -- Auto resize panes when resizing nvim window
 autocmd("VimResized", {
 	pattern = "*",

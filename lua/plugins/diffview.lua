@@ -1,6 +1,6 @@
 return {
 	"sindrets/diffview.nvim",
-	event = "BufEnter",
+	event = "VeryLazy",
 	config = function()
 		require("diffview").setup({
 			diff_binaries = false,

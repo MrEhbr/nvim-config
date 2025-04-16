@@ -13,6 +13,7 @@ end
 return {
 	{
 		"mfussenegger/nvim-dap",
+		event = "VeryLazy",
 		dependencies = {
 			{ "leoluz/nvim-dap-go", opts = {}, ft = "go" },
 			{
@@ -34,7 +35,6 @@ return {
 				end,
 			},
 		},
-		event = "VeryLazy",
 		keys = {
 			{
 				"<leader>db",

@@ -5,10 +5,9 @@ return {
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"saghen/blink.compat",
-			-- { "MattiasMTS/cmp-dbee", ft = "sql", opts = {} },
 			{
 				"folke/lazydev.nvim",
-				ft = "lua", -- only load on lua files
+				ft = "lua",
 				opts = {
 					library = {
 						{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
@@ -18,15 +17,6 @@ return {
 		},
 		version = "1.*",
 		opts = {
-			appearance = {
-				-- sets the fallback highlight groups to nvim-cmp's highlight groups
-				-- useful for when your theme doesn't support blink.cmp
-				-- will be removed in a future release, assuming themes add support
-				use_nvim_cmp_as_default = true,
-				-- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-				-- adjusts spacing to ensure icons are aligned
-				nerd_font_variant = "mono",
-			},
 			keymap = { preset = "enter" },
 			fuzzy = { implementation = "prefer_rust_with_warning" },
 			cmdline = {
@@ -44,6 +34,7 @@ return {
 				},
 				sources = function()
 					local type = vim.fn.getcmdtype()
+					print("type: " .. type)
 					-- Search forward and backward
 					if type == "/" or type == "?" then
 						return { "buffer" }
@@ -57,7 +48,6 @@ return {
 			},
 			sources = {
 				default = { "lazydev", "lsp", "path", "snippets", "buffer" },
-				-- per_filetype = { sql = { "dbee" } },
 				providers = {
 					cmdline = {
 						min_keyword_length = function(ctx)
@@ -68,20 +58,9 @@ return {
 						end,
 					},
 
-					-- dbee = {
-					-- 	name = "DB",
-					-- 	module = "blink.compat.source",
-					-- 	opts = { cmp_name = "cmp-dbee" },
-					-- 	transform_items = function(_, items)
-					-- 		return vim.tbl_filter(function(item)
-					-- 			return item.kind ~= require("blink.cmp.types").CompletionItemKind.Keyword
-					-- 		end, items)
-					-- 	end,
-					-- },
 					lazydev = {
 						name = "LazyDev",
 						module = "lazydev.integrations.blink",
-						-- make lazydev completions top priority (see `:h blink.cmp`)
 						score_offset = 100,
 					},
 				},

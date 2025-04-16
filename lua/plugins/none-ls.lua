@@ -76,11 +76,11 @@ return {
 		}
 
 		local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
-		local event = "BufWritePre" -- or "BufWritePost"
+		local event = "BufWritePre"
 		local async = event == "BufWritePost"
 
 		require("null-ls").setup({
-			debug = true,
+			debug = false,
 			on_attach = function(client, bufnr)
 				if client.supports_method("textDocument/formatting") then
 					vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })

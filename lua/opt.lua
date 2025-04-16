@@ -4,6 +4,7 @@ local g = vim.g
 g.mapleader = " "
 g.maplocalleader = " "
 g.loaded_ruby_provider = 0
+g.omni_sql_no_default_maps = 1
 
 -- Set highlight on search
 opt.hlsearch = true

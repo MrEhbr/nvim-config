@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-This repository contains my personal Neovim configuration. 
+This repository contains my personal Neovim configuration.
 
 ## Structure
 
