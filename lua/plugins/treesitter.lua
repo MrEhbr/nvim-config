@@ -27,6 +27,7 @@ return {
 				"regex",
 				"bash",
 				"diff",
+				"yaml",
 			},
 			auto_install = false,
 			autotag = {
