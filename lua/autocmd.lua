@@ -14,35 +14,6 @@ autocmd("VimResized", {
 	command = "tabdo wincmd =",
 })
 
-autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
-	pattern = "*",
-	group = vim.api.nvim_create_augroup("numbertoggle", {}),
-	callback = function()
-		if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
-			vim.opt.relativenumber = true
-		end
-	end,
-})
-
-autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
-	pattern = "*",
-	group = vim.api.nvim_create_augroup("numbertoggle", {}),
-	callback = function()
-		if vim.o.nu then
-			vim.opt.relativenumber = false
-			vim.cmd("redraw")
-		end
-	end,
-})
-
-autocmd("TextYankPost", {
-	group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-	pattern = "*",
-})
-
 autocmd("FileType", {
 	pattern = "dap-float",
 	command = "nnoremap <buffer><silent> q <cmd>close!<CR>",

@@ -6,7 +6,7 @@ return {
 			ensure_installed = {
 				-- LSP
 				"marksman",
-				"phpactor",
+				"intelephense",
 				"biome",
 				"svelte-language-server",
 				"pyright",

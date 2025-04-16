@@ -80,6 +80,7 @@ return {
 			{
 				"<leader>tf",
 				function()
+					require("neotest").output_panel.clear()
 					require("neotest").run.run(vim.fn.expand("%"))
 				end,
 				desc = "[t]est run [f]ile",
@@ -87,6 +88,7 @@ return {
 			{
 				"<leader>tA",
 				function()
+					require("neotest").output_panel.clear()
 					require("neotest").run.run(vim.uv.cwd())
 				end,
 				desc = "[t]est [A]ll files",
@@ -94,6 +96,7 @@ return {
 			{
 				"<leader>tS",
 				function()
+					require("neotest").output_panel.clear()
 					require("neotest").run.run({ suite = true })
 				end,
 				desc = "[t]est [S]uite",
@@ -101,6 +104,8 @@ return {
 			{
 				"<leader>tn",
 				function()
+					require("neotest").output_panel.clear()
+
 					require("neotest").run.run()
 				end,
 				desc = "[t]est [n]earest",
@@ -108,6 +113,8 @@ return {
 			{
 				"<leader>tl",
 				function()
+					require("neotest").output_panel.clear()
+
 					require("neotest").run.run_last()
 				end,
 				desc = "[t]est [l]ast",

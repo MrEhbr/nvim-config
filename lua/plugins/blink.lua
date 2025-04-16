@@ -34,10 +34,9 @@ return {
 				},
 				sources = function()
 					local type = vim.fn.getcmdtype()
-					print("type: " .. type)
 					-- Search forward and backward
 					if type == "/" or type == "?" then
-						return { "buffer" }
+						return {}
 					end
 					-- Commands
 					if type == ":" or type == "@" then
