@@ -13,7 +13,6 @@ return {
 				"nil", -- nix
 				"eslint-lsp",
 				"templ",
-				"buf-language-server",
 				"gopls",
 				"typescript-language-server",
 				"htmx-lsp",
