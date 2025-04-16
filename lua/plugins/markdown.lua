@@ -2,7 +2,6 @@ return {
 	{
 		"epwalsh/obsidian.nvim",
 		version = "*",
-		lazy = true,
 		event = {
 			"BufReadPre path/to/my-vault/*.md",
 			"BufNewFile path/to/my-vault/*.md",

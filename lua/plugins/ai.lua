@@ -34,6 +34,17 @@ return {
 		keys = {
 			{ "<M-c>", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat" },
 		},
+		cmd = {
+			"CopilotChat",
+			"CopilotChatToggle",
+			"CopilotChatCommit",
+			"CopilotChatExplain",
+			"CopilotChatReview",
+			"CopilotChatFix",
+			"CopilotChatOptimize",
+			"CopilotChatDocs",
+			"CopilotChatTests",
+		},
 		opts = {
 			debug = false,
 			model = "gpt-4o",

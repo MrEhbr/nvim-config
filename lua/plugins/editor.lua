@@ -58,6 +58,9 @@ return {
 	{
 		"j-hui/fidget.nvim",
 		opts = {
+			-- progress = {
+			-- 	ignore = {},
+			-- },
 			notification = {
 				override_vim_notify = true,
 				window = {

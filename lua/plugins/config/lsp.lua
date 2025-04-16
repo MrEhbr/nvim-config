@@ -124,7 +124,7 @@ vim.diagnostic.config({
 -- Provide default configuration for the following LSP servers:
 local servers = {
 	"marksman",
-	"phpactor",
+	-- "phpactor",
 	"biome",
 	"svelte",
 	"pyright",
@@ -133,8 +133,9 @@ local servers = {
 	"templ",
 	"buf_ls",
 	"ts_ls",
-	"htmx",
+	-- "htmx",
 	"lua_ls",
+	"intelephense",
 }
 
 for _, lsp in ipairs(servers) do
@@ -144,8 +145,18 @@ for _, lsp in ipairs(servers) do
 	})
 end
 
+lspconfig.intelephense.setup({
+	init_options = {
+		licenceKey = os.getenv("INTELEPHENSE_KEY"),
+	},
+})
+
 lspconfig.gopls.setup({
-	on_attach = on_attach,
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+	end,
 	capabilities = capabilities,
 	cmd = { "gopls" },
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
@@ -268,19 +279,20 @@ lspconfig.tailwindcss.setup({
 	capabilities = capabilities,
 	filetypes = {
 		"html",
+		"php",
 		"css",
-		"scss",
-		"javascript",
-		"javascriptreact",
-		"typescript",
-		"typescriptreact",
-		"svelte",
-		"vue",
-		"templ",
 	},
-	init_options = {
-		userLanguages = {
-			templ = "html",
+	settings = {
+		tailwindCSS = {
+			experimental = {
+				classRegex = {
+					{ "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]", 'class: "(.*)"' },
+					{ "cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+				},
+				includeLanguages = {
+					rust = "html",
+				},
+			},
 		},
 	},
 })
@@ -315,6 +327,23 @@ lspconfig.ts_ls.setup({
 			},
 		},
 	},
+})
+
+lspconfig.sqls.setup({
+	on_attach = function(client, bufnr)
+		require("sqls").on_attach(client, bufnr)
+		on_attach(client, bufnr)
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+		client.commands.executeQuery = function()
+			vim.notify("Execute query command is disabled", vim.log.levels.WARN)
+		end
+
+		require("scripts.sqls").init_sqls_config()
+	end,
+	capabilities = capabilities,
+	single_file_support = true,
+	filetypes = { "sql", "mysql" },
 })
 
 return {
