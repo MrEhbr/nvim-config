@@ -1,190 +1,100 @@
 return {
 	{
-		"epwalsh/obsidian.nvim",
-		version = "*",
-		event = {
-			"BufReadPre path/to/my-vault/*.md",
-			"BufNewFile path/to/my-vault/*.md",
-		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-		config = function()
-			require("obsidian").setup({
-				ui = { enable = false },
-				workspaces = {
-					{
-						name = "Vault",
-						path = "~/Obsidian/Vault",
-					},
-					{
-						name = "no-vault",
-						path = function()
-							return assert(vim.fn.getcwd())
-							-- return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
-						end,
-						overrides = {
-							notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
-							new_notes_location = "current_dir",
-							templates = {
-								folder = vim.NIL,
-							},
-							disable_frontmatter = true,
-						},
-					},
-				},
-				-- daily_notes = {
-				-- 	folder = "~/Obsidian/Vault/06 - Daily",
-				-- 	date_format = "%Y-%m-%d",
-				-- 	default_tags = { "daily" },
-				-- 	template = "(TEMPLATE) Daily",
-				-- },
-				completion = {
-					nvim_cmp = true,
-					min_chars = 2,
-				},
-				mappings = {
-					["lf"] = {
-						action = function()
-							return require("obsidian").util.gf_passthrough()
-						end,
-						opts = { noremap = false, expr = true, buffer = true },
-					},
-					-- Toggle check-boxes.
-					["<leader>ch"] = {
-						action = function()
-							return require("obsidian").util.toggle_checkbox()
-						end,
-						opts = { buffer = true },
-					},
-					-- Smart action depending on context, either follow link or toggle checkbox.
-					["<cr>"] = {
-						action = function()
-							return require("obsidian").util.smart_action()
-						end,
-						opts = { buffer = true, expr = true },
-					},
-				},
-
-				new_notes_location = "notes_subdir",
-
-				---@param title string|?
-				---@return string
-				note_id_func = function(title)
-					local suffix = ""
-					if title ~= nil then
-						suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-					else
-						for _ = 1, 4 do
-							suffix = suffix .. string.char(math.random(65, 90))
-						end
-					end
-					return tostring(os.time()) .. "-" .. suffix
-				end,
-
-				wiki_link_func = function(opts)
-					return require("obsidian.util").wiki_link_id_prefix(opts)
-				end,
-
-				markdown_link_func = function(opts)
-					return require("obsidian.util").markdown_link(opts)
-				end,
-
-				preferred_link_style = "markdown",
-				disable_frontmatter = false,
-
-				---@return table
-				note_frontmatter_func = function(note)
-					if note.title then
-						note:add_alias(note.title)
-					end
-
-					local out = { id = note.id, aliases = note.aliases, tags = note.tags }
-					if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-						for k, v in pairs(note.metadata) do
-							out[k] = v
-						end
-					end
-
-					return out
-				end,
-
-				templates = {
-					folder = "99 - Meta/00 - Templates",
-					date_format = "%Y-%m-%d",
-					time_format = "%H:%M",
-					substitutions = {},
-				},
-
-				---@param url string
-				follow_url_func = function(url)
-					vim.fn.jobstart({ "open", url })
-				end,
-
-				---@diagnostic disable-next-line: missing-fields
-				picker = {
-					name = "telescope.nvim",
-					mappings = {
-						new = "<C-x>",
-						insert_link = "<C-l>",
-					},
-					tag_mappings = {
-						tag_note = "<C-x>",
-						insert_tag = "<C-l>",
-					},
-				},
-				sort_by = "modified",
-				sort_reversed = true,
-				search_max_lines = 1000,
-				open_notes_in = "current",
-
-				attachments = {
-					img_folder = "98 - Meta/01 - Images",
-					confirm_img_paste = true,
-
-					---@return string
-					img_name_func = function()
-						return string.format("%s-", os.time())
-					end,
-
-					---@param client obsidian.Client
-					---@param path obsidian.Path the absolute path to the image file
-					---@return string
-					img_text_func = function(client, path)
-						path = client:vault_relative_path(path) or path
-						return string.format("![%s](%s)", path.name, path)
-					end,
-				},
-			})
-		end,
-		cmd = {
-			"ObsidianBacklinks",
-			"ObsidianFollowLink",
-			"ObsidianLink",
-			"ObsidianLinkNew",
-			"ObsidianNew",
-			"ObsidianOpen",
-			"ObsidianPasteImg",
-			"ObsidianQuickSwitch",
-			"ObsidianRename",
-			"ObsidianSearch",
-			"ObsidianTemplate",
-			"ObsidianToday",
-			"ObsidianTomorrow",
-			"ObsidianWorkspace",
-			"ObsidianYesterday",
-		},
-	},
-	{
 		"MeanderingProgrammer/render-markdown.nvim",
 		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-
 		opts = {
-			code = {
+			heading = {
+				-- Turn on / off heading icon & background rendering
 				enabled = true,
+				sign = false,
+				-- icons = { " 󰼏 ", " 󰼐 ", " 󰼑 ", " 󰼒 ", " 󰼓 ", " 󰼔 " },
+				icons = { " 󰎥 ", " 󰎨 ", " 󰎫 ", " 󰎲 ", " 󰎯 ", " 󰎴 " },
+				-- icons = { " 󰎤 ", " 󰎧 ", " 󰎪 ", " 󰎭 ", " 󰎱 ", " 󰎳 " },
+				-- icons = { " 󰉫 ", " 󰉬 ", " 󰉭 ", " 󰉮 ", " 󰉯 ", " 󰉰 " },
+				signs = { " " },
+				position = "inline",
+				width = "block",
+			},
+			dash = {
+				width = 120,
+			},
+			link = {
+				-- Turn on / off inline link icon rendering
+				enabled = true,
+				-- Inlined with 'image' elements
+				image = "  ",
+				-- Inlined with 'inline_link' elements
+				hyperlink = "󰌷 ",
+				-- Applies to the inlined icon
+				highlight = "RenderMarkdownLink",
+			},
+			code = {
+				left_pad = 0,
+				position = "right",
+				min_width = 120,
 				disable_background = true,
 				border = "none",
-				-- highlight = "",
+			},
+			checkbox = {
+				unchecked = {
+					icon = " ",
+				},
+				checked = {
+					icon = " ",
+					highlight = "RenderMarkdownChecked",
+				},
+				custom = {
+					incomplete = { raw = "[/]", rendered = "󰡕 ", highlight = "RenderMarkdownInfo" },
+					todo = { raw = "[-]", rendered = "󰜺 ", highlight = "RenderMarkdownQuote" },
+					rescheduled = { raw = "[>]", rendered = "󰦛 ", highlight = "RenderMarkdownInfo" },
+					scheduled = { raw = "[<]", rendered = " ", highlight = "RenderMarkdownChecked" },
+					question = { raw = "[?]", rendered = " ", highlight = "RenderMarkdownWarn" },
+					important = { raw = "[!]", rendered = " ", highlight = "RenderMarkdownError" },
+					star = { raw = "[*]", rendered = " ", highlight = "RenderMarkdownWarn" },
+					quote = { raw = '["]', rendered = "󱀢 ", highlight = "RenderMarkdownUnchecked" },
+					location = { raw = "[l]", rendered = " ", highlight = "RenderMarkdownQuote" },
+					bookmark = { raw = "[b]", rendered = " ", highlight = "RenderMarkdownH6" },
+					information = { raw = "[i]", rendered = "󰋼 ", highlight = "RenderMarkdownInfo" },
+					amount = { raw = "[S]", rendered = "󱢐 ", highlight = "RenderMarkdownWarn" },
+					idea = { raw = "[I]", rendered = " ", highlight = "RenderMarkdownHint" },
+					con = { raw = "[c]", rendered = "󰔒 ", highlight = "RenderMarkdownQuote" },
+					pro = { raw = "[p]", rendered = "󰔔 ", highlight = "RenderMarkdownSuccess" },
+				},
+			},
+			callout = {
+				note = { raw = "[!NOTE]", rendered = "󰙏 Note", highlight = "RenderMarkdownInfo" },
+				info = { raw = "[!INFO]", rendered = "󰋽 Info", highlight = "RenderMarkdownInfo" },
+				todo = { raw = "[!TODO]", rendered = "󰗡 Todo", highlight = "RenderMarkdownInfo" },
+				summary = { raw = "[!SUMMARY]", rendered = "󰨸 Summary", highlight = "RenderMarkdownHint" },
+				abstract = { raw = "[!ABSTRACT]", rendered = "󰨸 Abstract", highlight = "RenderMarkdownHint" },
+				tldr = { raw = "[!TLDR]", rendered = "󰨸 Tldr", highlight = "RenderMarkdownHint" },
+				tip = { raw = "[!TIP]", rendered = "󰌶 Tip", highlight = "RenderMarkdownHint" },
+				hint = { raw = "[!HINT]", rendered = "󰅾 Hint", highlight = "RenderMarkdownHint" },
+				important = { raw = "[!IMPORTANT]", rendered = "󰅾 Important", highlight = "RenderMarkdownHint" },
+				check = { raw = "[!CHECK]", rendered = "󰄬 Check", highlight = "RenderMarkdownSuccess" },
+				done = { raw = "[!DONE]", rendered = "󰄬 Done", highlight = "RenderMarkdownSuccess" },
+				success = { raw = "[!SUCCESS]", rendered = "󰄬 Success", highlight = "RenderMarkdownSuccess" },
+				question = { raw = "[!QUESTION]", rendered = "󰘥 Question", highlight = "RenderMarkdownWarn" },
+				help = { raw = "[!HELP]", rendered = "󰘥 Help", highlight = "RenderMarkdownWarn" },
+				faq = { raw = "[!FAQ]", rendered = "󰘥 Faq", highlight = "RenderMarkdownWarn" },
+				warning = { raw = "[!WARNING]", rendered = "󰀪 Warning", highlight = "RenderMarkdownQuote" },
+				caution = { raw = "[!CAUTION]", rendered = "󰀪 Caution", highlight = "RenderMarkdownQuote" },
+				attention = { raw = "[!ATTENTION]", rendered = "󰀪 Attention", highlight = "RenderMarkdownQuote" },
+				failure = { raw = "[!FAILURE]", rendered = "󰅖 Failure", highlight = "RenderMarkdownError" },
+				fail = { raw = "[!FAIL]", rendered = "󰅖 Fail", highlight = "RenderMarkdownError" },
+				missing = { raw = "[!MISSING]", rendered = "󰅖 Missing", highlight = "RenderMarkdownError" },
+				danger = { raw = "[!DANGER]", rendered = "󱐌 Danger", highlight = "RenderMarkdownError" },
+				error = { raw = "[!ERROR]", rendered = "󱐌 Error", highlight = "RenderMarkdownError" },
+				bug = { raw = "[!BUG]", rendered = "󰨰 Bug", highlight = "RenderMarkdownError" },
+				example = { raw = "[!EXAMPLE]", rendered = "󰉹 Example", highlight = "RenderMarkdownH6" },
+				quote = { raw = "[!QUOTE]", rendered = "󱆨 Quote", highlight = "RenderMarkdownUnchecked" },
+			},
+			quote = {
+				repeat_linebreak = true,
+			},
+			pipe_table = {
+				style = "normal",
+				cell = "padded",
 			},
 		},
 	},
