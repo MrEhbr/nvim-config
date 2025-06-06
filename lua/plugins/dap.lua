@@ -12,10 +12,13 @@ for name, opts in pairs(signs) do
 	vim.fn.sign_define(name, opts)
 end
 
-local function get_arguments(callback)
-	vim.ui.input({ prompt = "Args: " }, function(input)
-		local args = vim.split(input or "", " ")
-		callback(args)
+local function get_arguments()
+	return coroutine.create(function(dap_run_co)
+		local args = {}
+		vim.ui.input({ prompt = "Args: " }, function(input)
+			args = vim.split(input or "", " ")
+			coroutine.resume(dap_run_co, args)
+		end)
 	end)
 end
 
@@ -32,9 +35,7 @@ local function go_configurations(dap)
 			name = "Debug (Arguments)",
 			request = "launch",
 			program = "${file}",
-			args = function(callback)
-				get_arguments(callback)
-			end,
+			args = get_arguments,
 		},
 		{
 			type = "go",
