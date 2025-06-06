@@ -30,6 +30,7 @@ return {
 				"json",
 				"just",
 				"dart",
+				"bruno",
 			},
 			auto_install = false,
 			autotag = {
@@ -38,6 +39,8 @@ return {
 			highlight = {
 				enable = true,
 				use_languagetree = true,
+				-- Disable LSP semantic tokens to prevent conflicts with Tree-sitter
+				additional_vim_regex_highlighting = false,
 			},
 
 			indent = {

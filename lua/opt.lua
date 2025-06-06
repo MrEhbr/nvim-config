@@ -16,7 +16,7 @@ opt.clipboard = "unnamedplus"
 
 opt.relativenumber = true
 vim.opt_local.conceallevel = 2
-vim.filetype.add({ extension = { templ = "templ", bru = "bruno" } })
+vim.filetype.add({ extension = { templ = "templ", bru = "bruno", tmpl = "gotmpl" } })
 
 opt.showmode = false
 
@@ -25,6 +25,7 @@ opt.expandtab = true
 opt.shiftwidth = 2
 opt.tabstop = 2
 opt.softtabstop = 2
+opt.scrolloff = 10
 
 opt.ignorecase = true
 opt.smartcase = true

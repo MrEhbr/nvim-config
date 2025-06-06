@@ -8,22 +8,17 @@ return {
 				"marksman",
 				"intelephense",
 				"biome",
-				"svelte-language-server",
 				"pyright",
 				"nil", -- nix
-				"eslint-lsp",
 				"templ",
 				"gopls",
-				"typescript-language-server",
 				"htmx-lsp",
 				"tailwindcss-language-server",
 				"json-lsp",
 				"yaml-language-server",
 				"lua-language-server",
 				"rust-analyzer",
-				"sqls",
 				-- Diagnostic
-				"eslint_d",
 				"harper-ls",
 				-- "golangci-lint",
 
@@ -47,9 +42,9 @@ return {
 
 				-- Debuggers
 				"js-debug-adapter",
-				"chrome-debug-adapter",
 				"codelldb",
 				"delve",
+				"php-debug-adapter",
 			},
 		}
 	end,

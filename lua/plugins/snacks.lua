@@ -22,6 +22,13 @@ local exclude = {
 	"**/.pnpm-store/*",
 }
 
+local function filter_exclude(item, filter)
+	for _, pattern in ipairs(exclude) do
+		return not (vim.fn.match(item.file, pattern) >= 0)
+	end
+	return true
+end
+
 return {
 	priority = 1000,
 	lazy = false,
@@ -41,7 +48,7 @@ return {
 			enabled = true,
 			replace_netrw = true,
 		},
-		indent = { enabled = false },
+		indent = { enabled = true },
 		notifier = {
 			enabled = true,
 			timeout = 3000,
@@ -52,28 +59,32 @@ return {
 			end,
 		},
 		picker = {
+			exclude = exclude,
+			ui_select = true,
 			formatters = {
-				file = {
-					filename_first = false, -- display filename before the file path
-					truncate = 40, -- truncate the file path to (roughly) this length
-					filename_only = false, -- only show the filename
-					icon_width = 2, -- width of the icon (in characters)
-					git_status_hl = false, -- use the git status highlight group for the filename
+				file = { filename_first = true },
+				selected = { show_always = true },
+			},
+			icons = {
+				ui = {
+					selected = "▌ ",
+					unselected = "  ",
 				},
 			},
+			actions = require("config.snacks").actions,
 			enabled = true,
 			sources = {
 				explorer = {
 					supports_live = false,
-					auto_close = true,
+					auto_close = false,
+					hidden = true,
 					layout = {
-						preview = false,
 						layout = {
 							backdrop = false,
-							width = 40,
-							min_width = 40,
+							width = 60,
+							min_width = 50,
 							height = 0,
-							position = "left",
+							position = "right",
 							border = "right",
 							box = "vertical",
 							{ win = "list", border = "none" },
@@ -81,12 +92,22 @@ return {
 						},
 					},
 					win = {
+						input = {
+							keys = {},
+						},
 						list = {
 							keys = {
 								["<c-n>"] = "close",
 								["<Esc>"] = { "close", mode = { "n", "i" } },
+								["Z"] = "explorer_close_all",
 								["v"] = "edit_vsplit",
 								["s"] = "edit_split",
+								["y"] = "copy_file_path",
+								["f"] = "search_in_directory",
+								["F"] = "search_in_directory_case_sensitive",
+								["D"] = "diff",
+								["{"] = "focus_next_folder",
+								["}"] = "focus_prev_folder",
 							},
 						},
 					},
@@ -97,15 +118,33 @@ return {
 					layout = { layout = layout },
 					exclude = exclude,
 				},
-
 				recent = {
 					exclude = exclude,
 					layout = { layout = layout },
 				},
-
 				grep = {
 					exclude = exclude,
 					layout = { layout = layout },
+				},
+
+				lsp_implementations = {
+					layout = { layout = layout },
+					filter = { filter = filter_exclude },
+				},
+				lsp_references = {
+					layout = { layout = layout },
+					filter = { filter = filter_exclude },
+				},
+				lsp_definitions = {
+					layout = { layout = layout },
+					filter = { filter = filter_exclude },
+				},
+			},
+			win = {
+				input = {
+					keys = {
+						["<C-q>"] = { "qflist_trouble", mode = { "i", "n" } },
+					},
 				},
 			},
 		},

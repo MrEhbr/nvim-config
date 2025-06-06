@@ -11,25 +11,26 @@ return {
 			"nvim-neotest/neotest-plenary",
 			"nvim-neotest/neotest-vim-test",
 
-			{
-				"fredrikaverpil/neotest-golang",
-				dependencies = {
-					{
-						"leoluz/nvim-dap-go",
-						opts = {},
-					},
-				},
-				branch = "main",
-			},
+			{ "fredrikaverpil/neotest-golang", branch = "main" },
 			"rouge8/neotest-rust",
 		},
 		opts = function(_, opts)
 			opts.adapters = opts.adapters or {}
 			opts.adapters["neotest-golang"] = {
+				log_level = vim.log.levels.DEBUG,
+				runner = "gotestsum",
+				gotestsum_args = { "--format=testdox", "--debug" },
 				go_test_args = {
 					"-v",
 					"-race",
 					"-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+				},
+				dap_mode = "manual",
+				dap_manual_config = {
+					name = "Debug go tests",
+					type = "go",
+					request = "launch",
+					mode = "test",
 				},
 			}
 			opts.adapters["neotest-rust"] = {
@@ -105,7 +106,6 @@ return {
 				"<leader>tn",
 				function()
 					require("neotest").output_panel.clear()
-
 					require("neotest").run.run()
 				end,
 				desc = "[t]est [n]earest",

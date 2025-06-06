@@ -12,13 +12,17 @@ vim.lsp.enable({
 	"nil_ls",
 	"templ",
 	"dartls",
+	"biome",
+	"copilot",
 })
+
+vim.lsp.inline_completion.enable()
 
 vim.lsp.config("*", {
 	capabilities = {
 		textDocument = {
 			semanticTokens = {
-				multilineTokenSupport = true,
+				multilineTokenSupport = false,
 			},
 			foldingRange = {
 				dynamicRegistration = false,
@@ -48,9 +52,10 @@ vim.lsp.config("*", {
 	root_markers = { ".git" },
 })
 
+vim.highlight.priorities.semantic_tokens = 95
 vim.diagnostic.config({
 	virtual_lines = false,
-	-- virtual_text = true,
+	virtual_text = false,
 	underline = true,
 	update_in_insert = false,
 	severity_sort = true,
@@ -86,14 +91,45 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("gs", vim.lsp.buf.signature_help, "Signature Documentation")
 		map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 		map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+		map("<leader>la", vim.lsp.codelens.run, "Run Code Lens Action")
 		map("<leader>fm", vim.lsp.buf.format, "Format")
 		map("<leader>lr", vim.lsp.buf.rename, "Rename Symbol")
 		map("<leader>lh", function()
 			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 		end, "Toggle Inlay Hints")
-		map("<leader>lc", require("config.utils").copyFilePathAndLineNumber, "Copy File Path and Line Number")
 
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		-- Add code lens support
+		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens) then
+			vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+				buffer = event.buf,
+				group = vim.api.nvim_create_augroup("lsp-codelens", { clear = false }),
+				callback = function()
+					vim.lsp.codelens.refresh()
+				end,
+			})
+
+			-- Initial refresh
+			vim.lsp.codelens.refresh()
+		end
+
+		-- if client and client:supports_method("textDocument/inlineCompletion") then
+		-- 	vim.lsp.inline_completion.enable(true)
+		-- 	vim.keymap.set("i", "<M-l>", function()
+		-- 		if not vim.lsp.inline_completion.get() then
+		-- 			return "<M-l>"
+		-- 		end
+		-- 	end, { expr = true, desc = "Accept Inline Completion" })
+
+		vim.keymap.set("i", "<M-]>", function()
+			vim.lsp.inline_completion.select({ count = 1 })
+		end)
+
+		vim.keymap.set("i", "<M-[>", function()
+			vim.lsp.inline_completion.select({ count = -1 })
+		end)
+		-- end
+
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
 			local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = false })
 
@@ -120,12 +156,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		vim.api.nvim_create_autocmd({ "CursorHold" }, {
-			group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-			callback = function()
-				vim.diagnostic.open_float(nil, { focus = false })
-			end,
-		})
+		-- vim.api.nvim_create_autocmd({ "CursorHold" }, {
+		-- 	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
+		-- 	callback = function()
+		-- 		vim.diagnostic.open_float(nil, { focus = false })
+		-- 	end,
+		-- })
 	end,
 })
 

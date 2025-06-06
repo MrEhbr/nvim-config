@@ -13,6 +13,14 @@ vim.keymap.set("n", "<C-s>", "<cmd> w <CR>", { desc = "Save file" })
 -- Copy entire file content
 vim.keymap.set("n", "<C-c>", "<cmd> %y+ <CR>", { desc = "Copy whole file" })
 
+-- Copy file name to clipboard
+vim.keymap.set(
+	"n",
+	"<leader>fy",
+	require("config.utils").copy_file_path_and_line_number,
+	{ desc = "Copy File Path and Line Number" }
+)
+
 -----------------------------------------------------------------------------------
 -- Navigation
 -----------------------------------------------------------------------------------
@@ -56,5 +64,5 @@ vim.keymap.set("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { desc = "Dont copy re
 -----------------------------------------------------------------------------------
 -- Quickfix Navigation
 -----------------------------------------------------------------------------------
-vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>", { desc = "Next quickfix" })
-vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>", { desc = "Previous quickfix" })
+-- vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>", { desc = "Next quickfix" })
+-- vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>", { desc = "Previous quickfix" })

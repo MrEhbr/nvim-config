@@ -5,6 +5,7 @@ return {
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"saghen/blink.compat",
+			{ "vanducng/cmp-dbee", opts = { lazy_column_completion = true } },
 			{
 				"folke/lazydev.nvim",
 				ft = "lua",
@@ -47,7 +48,11 @@ return {
 			},
 			sources = {
 				default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+				per_filetype = {
+					sql = { "dbee", "buffer" },
+				},
 				providers = {
+					-- dbee = { name = "cmp-dbee", module = "blink.compat.source" },
 					cmdline = {
 						min_keyword_length = function(ctx)
 							if ctx.mode == "cmdline" and string.find(ctx.line, " ") == nil then
@@ -56,6 +61,7 @@ return {
 							return 0
 						end,
 					},
+					dbee = { name = "DBEE", module = "cmp-dbee.blink" },
 
 					lazydev = {
 						name = "LazyDev",

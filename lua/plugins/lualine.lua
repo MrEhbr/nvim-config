@@ -9,6 +9,13 @@ local function diff_source()
 	end
 end
 
+local copilot_icons = {
+	Error = { " ", "DiagnosticError" },
+	Inactive = { " ", "MsgArea" },
+	Warning = { " ", "DiagnosticWarn" },
+	Normal = { " ", "Special" },
+}
+
 return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = {
@@ -54,30 +61,19 @@ return {
 						color = { gui = "bold" },
 					},
 					{
-						"copilot",
-						-- Default values
-						symbols = {
-							status = {
-								icons = {
-									enabled = " ",
-									sleep = " ", -- auto-trigger disabled
-									disabled = " ",
-									warning = " ",
-									unknown = " ",
-								},
-								hl = {
-									enabled = "#50FA7B",
-									sleep = "#AEB7D0",
-									disabled = "#6272A4",
-									warning = "#FFB86C",
-									unknown = "#FF5555",
-								},
-							},
-							spinners = { "∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙" },
-							spinner_color = "#6272A4",
-						},
-						show_colors = false,
-						show_loading = true,
+						function()
+							local status = require("sidekick.status").get()
+							return status and vim.tbl_get(copilot_icons, status.kind, 1)
+						end,
+						cond = function()
+							return require("sidekick.status").get() ~= nil
+						end,
+						color = function()
+							local status = require("sidekick.status").get()
+							local hl = status
+								and (status.busy and "DiagnosticWarn" or vim.tbl_get(copilot_icons, status.kind, 2))
+							return { fg = Snacks.util.color(hl) }
+						end,
 					},
 				},
 				lualine_y = { "filetype" },
