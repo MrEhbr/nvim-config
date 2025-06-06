@@ -50,7 +50,7 @@ vim.lsp.config("*", {
 
 vim.diagnostic.config({
 	virtual_lines = false,
-	-- virtual_text = true,
+	virtual_text = false,
 	underline = true,
 	update_in_insert = false,
 	severity_sort = true,
@@ -120,12 +120,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		vim.api.nvim_create_autocmd({ "CursorHold" }, {
-			group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-			callback = function()
-				vim.diagnostic.open_float(nil, { focus = false })
-			end,
-		})
+		-- vim.api.nvim_create_autocmd({ "CursorHold" }, {
+		-- 	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
+		-- 	callback = function()
+		-- 		vim.diagnostic.open_float(nil, { focus = false })
+		-- 	end,
+		-- })
 	end,
 })
 

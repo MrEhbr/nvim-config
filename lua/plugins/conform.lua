@@ -40,6 +40,7 @@ return {
 
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			typestript = { "prettierd", "prettier", stop_after_first = true },
+			["_"] = { "trim_whitespace" },
 		},
 		formatters = {
 			golines = {

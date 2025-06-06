@@ -60,4 +60,68 @@ return {
 			},
 		},
 	},
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "VeryLazy",
+		priority = 1000,
+		config = function()
+			require("tiny-inline-diagnostic").setup()
+		end,
+	},
+	{
+		"code-biscuits/nvim-biscuits",
+		event = "BufReadPost",
+		opts = {
+			show_on_start = false,
+			cursor_line_only = true,
+			default_config = {
+				min_distance = 10,
+				max_length = 50,
+				prefix_string = " 󰆘 ",
+				prefix_highlight = "Comment",
+				enable_linehl = true,
+			},
+		},
+	},
+	{
+		"gbprod/cutlass.nvim",
+		event = "BufReadPost",
+		opts = {
+			cut_key = "x",
+			override_del = true,
+			exclude = {},
+			registers = {
+				select = "_",
+				delete = "_",
+				change = "_",
+			},
+		},
+	},
+	{
+		"hiphish/rainbow-delimiters.nvim",
+		event = "BufReadPost",
+		config = function()
+			local rainbow_delimiters = require("rainbow-delimiters")
+
+			vim.g.rainbow_delimiters = {
+				strategy = {
+					[""] = rainbow_delimiters.strategy["global"],
+					vim = rainbow_delimiters.strategy["local"],
+				},
+				query = {
+					[""] = "rainbow-delimiters",
+					lua = "rainbow-blocks",
+				},
+				highlight = {
+					"RainbowDelimiterRed",
+					"RainbowDelimiterYellow",
+					"RainbowDelimiterBlue",
+					"RainbowDelimiterOrange",
+					"RainbowDelimiterGreen",
+					"RainbowDelimiterViolet",
+					"RainbowDelimiterCyan",
+				},
+			}
+		end,
+	},
 }
