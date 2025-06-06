@@ -105,7 +105,6 @@ return {
 				"<leader>tn",
 				function()
 					require("neotest").output_panel.clear()
-
 					require("neotest").run.run()
 				end,
 				desc = "[t]est [n]earest",

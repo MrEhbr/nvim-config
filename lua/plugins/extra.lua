@@ -13,24 +13,19 @@ return {
 	},
 	{ "folke/which-key.nvim", lzay = false, opts = {} },
 	{
-		"sphamba/smear-cursor.nvim",
-		opts = {
-			stiffness = 0.8, -- 0.6      [0, 1]
-			trailing_stiffness = 0.5, -- 0.4      [0, 1]
-			stiffness_insert_mode = 0.6, -- 0.4      [0, 1]
-			trailing_stiffness_insert_mode = 0.6, -- 0.4      [0, 1]
-			distance_stop_animating = 0.5, -- 0.1      > 0
-		},
-	},
-	{
 		"nvchad/showkeys",
 		cmd = "ShowkeysToggle",
+		lazy = false,
 		opts = {
 			timeout = 1,
 			maxkeys = 6,
 			-- bottom-left, bottom-right, bottom-center, top-left, top-right, top-center
 			position = "bottom-right",
 		},
+		config = function(_, opts)
+			require("showkeys").setup(opts)
+			require("showkeys").open()
+		end,
 	},
 	{
 		"windwp/nvim-spectre",
@@ -59,5 +54,75 @@ return {
 				desc = "Replace Buffer",
 			},
 		},
+	},
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "VeryLazy",
+		priority = 1000,
+		config = function()
+			require("tiny-inline-diagnostic").setup()
+		end,
+	},
+	{
+		"code-biscuits/nvim-biscuits",
+		event = "BufReadPost",
+		opts = {
+			show_on_start = false,
+			cursor_line_only = true,
+			default_config = {
+				min_distance = 10,
+				max_length = 50,
+				prefix_string = " 󰆘 ",
+				prefix_highlight = "Comment",
+				enable_linehl = true,
+			},
+		},
+	},
+	{
+		"gbprod/cutlass.nvim",
+		event = "BufReadPost",
+		opts = {
+			cut_key = "x",
+			override_del = true,
+			exclude = {},
+			registers = {
+				select = "_",
+				delete = "_",
+				change = "_",
+			},
+		},
+	},
+	{
+		"hiphish/rainbow-delimiters.nvim",
+		event = "BufReadPost",
+		config = function()
+			local rainbow_delimiters = require("rainbow-delimiters")
+
+			vim.g.rainbow_delimiters = {
+				strategy = {
+					[""] = rainbow_delimiters.strategy["global"],
+					vim = rainbow_delimiters.strategy["local"],
+				},
+				query = {
+					[""] = "rainbow-delimiters",
+					lua = "rainbow-blocks",
+				},
+				highlight = {
+					"RainbowDelimiterRed",
+					"RainbowDelimiterYellow",
+					"RainbowDelimiterBlue",
+					"RainbowDelimiterOrange",
+					"RainbowDelimiterGreen",
+					"RainbowDelimiterViolet",
+					"RainbowDelimiterCyan",
+				},
+			}
+		end,
+	},
+	{
+		"m4xshen/hardtime.nvim",
+		lazy = false,
+		dependencies = { "MunifTanjim/nui.nvim" },
+		opts = {},
 	},
 }

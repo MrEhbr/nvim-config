@@ -1,4 +1,15 @@
-local SYSTEM_PROMPT = require("config.codecompanion.prompts").SYSTEM_PROMPT
+local prompts = require("config.codecompanion.prompts")
+local SYSTEM_PROMPT = prompts.SYSTEM_PROMPT
+local ALL_IN_ONE = prompts.ALL_IN_ONE
+
+local function format_llm_role(adapter)
+	local default = adapter and adapter.schema and adapter.schema.model and adapter.schema.model.default
+	if type(default) == "function" then
+		default = default(adapter)
+	end
+	local model_suffix = default and ("(" .. default .. ")") or ""
+	return "  " .. adapter.formatted_name .. model_suffix
+end
 
 return {
 	enabled = true,
@@ -7,19 +18,28 @@ return {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
 		"MeanderingProgrammer/render-markdown.nvim",
+		"ravitemer/codecompanion-history.nvim",
 	},
 	opts = {
-		-- adapters = {
-		-- copilot = function()
-		-- 	return require("codecompanion.adapters").extend("copilot", {
-		-- 		schema = {
-		-- 			model = {
-		-- 				default = "claude-3.7-sonnet",
-		-- 			},
-		-- 		},
-		-- 	})
-		-- end,
-		-- },
+		extensions = {
+			history = {
+				enabled = true,
+				opts = {
+					picker = "snacks",
+				},
+			},
+		},
+		adapters = {
+			copilot = function()
+				return require("codecompanion.adapters").extend("copilot", {
+					schema = {
+						model = {
+							default = "gpt-5",
+						},
+					},
+				})
+			end,
+		},
 		strategies = {
 			chat = {
 				adapter = "copilot",
@@ -27,7 +47,7 @@ return {
 					groups = {
 						["all_in_one"] = {
 							description = "Everything but the kitchen sink (we're working on that)",
-							system_prompt = "You are an agent, please keep going until the user's query is completely resolved, before ending your turn and yielding back to the user. Only terminate your turn when you are sure that the problem is solved. If you are not sure about file content or codebase structure pertaining to the user's request, use your tools to read files and gather the relevant information: do NOT guess or make up an answer. You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.",
+							system_prompt = ALL_IN_ONE,
 							tools = {
 								"cmd_runner",
 								"editor",
@@ -38,21 +58,11 @@ return {
 					},
 				},
 				roles = {
-					llm = function(adapter)
-						local model_name = ""
-						if adapter.schema and adapter.schema.model and adapter.schema.model.default then
-							local model = adapter.schema.model.default
-							if type(model) == "function" then
-								model = model(adapter)
-							end
-							model_name = "(" .. model .. ")"
-						end
-						return "  " .. adapter.formatted_name .. model_name
-					end,
+					llm = format_llm_role,
 					user = " User",
 				},
 				slash_commands = {
-					["buffer"] = {
+					buffer = {
 						callback = "strategies.chat.slash_commands.buffer",
 						description = "Insert open buffers",
 						opts = {
@@ -60,7 +70,7 @@ return {
 							provider = "snacks",
 						},
 					},
-					["file"] = {
+					file = {
 						callback = "strategies.chat.slash_commands.file",
 						description = "Insert a file",
 						opts = {
@@ -80,17 +90,13 @@ return {
 						description = "Send",
 					},
 					close = {
-						modes = {
-							n = "q",
-						},
+						modes = { n = "q" },
 						index = 3,
 						callback = "keymaps.close",
 						description = "Close Chat",
 					},
 					stop = {
-						modes = {
-							n = "<C-c>",
-						},
+						modes = { n = "<C-c>" },
 						index = 4,
 						callback = "keymaps.stop",
 						description = "Stop Request",
@@ -105,7 +111,6 @@ return {
 		},
 		display = {
 			chat = {
-				-- Change to true to show the current model
 				show_settings = true,
 				window = {
 					layout = "vertical", -- float|vertical|horizontal|buffer
@@ -119,7 +124,7 @@ return {
 			log_level = "DEBUG",
 			system_prompt = SYSTEM_PROMPT,
 		},
-		prompt_library = require("config.codecompanion.prompts").PROMPT_LIBRARY,
+		prompt_library = prompts.PROMPT_LIBRARY,
 	},
 	keys = {
 		-- Recommend setup

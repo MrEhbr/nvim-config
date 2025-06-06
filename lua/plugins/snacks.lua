@@ -41,7 +41,7 @@ return {
 			enabled = true,
 			replace_netrw = true,
 		},
-		indent = { enabled = false },
+		indent = { enabled = true },
 		notifier = {
 			enabled = true,
 			timeout = 3000,
@@ -64,16 +64,18 @@ return {
 			enabled = true,
 			sources = {
 				explorer = {
+					actions = require("config.snacks").actions,
 					supports_live = false,
-					auto_close = true,
+					auto_close = false,
+					hidden = true,
 					layout = {
 						preview = false,
 						layout = {
 							backdrop = false,
-							width = 40,
-							min_width = 40,
+							width = 60,
+							min_width = 50,
 							height = 0,
-							position = "left",
+							position = "right",
 							border = "right",
 							box = "vertical",
 							{ win = "list", border = "none" },
@@ -85,8 +87,15 @@ return {
 							keys = {
 								["<c-n>"] = "close",
 								["<Esc>"] = { "close", mode = { "n", "i" } },
+								["Z"] = "explorer_close_all",
 								["v"] = "edit_vsplit",
 								["s"] = "edit_split",
+								["y"] = "copy_file_path",
+								["f"] = "search_in_directory",
+								["F"] = "search_in_directory_case_sensitive",
+								["D"] = "diff",
+								["{"] = "focus_next_folder",
+								["}"] = "focus_prev_folder",
 							},
 						},
 					},

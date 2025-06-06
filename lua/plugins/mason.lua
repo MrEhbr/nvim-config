@@ -50,6 +50,7 @@ return {
 				"chrome-debug-adapter",
 				"codelldb",
 				"delve",
+				"php-debug-adapter",
 			},
 		}
 	end,
