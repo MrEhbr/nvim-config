@@ -14,13 +14,15 @@ return {
 		end,
 		config = function()
 			local dbee = require("dbee")
-			local sources = require("dbee.sources").EnvSource:new("DBEE_CONNECTIONS")
-			local conns = sources:load()
+			local envSource = require("dbee.sources").EnvSource:new("DBEE_CONNECTIONS")
+			local conns = envSource:load()
 
 			local opts = {
 				default_connection = os.getenv("DBEE_DEFAULT_CONNECTION") or (#conns > 0 and conns[1].name or nil),
 				sources = {
-					sources,
+					envSource,
+					-- // ~/.config/dbee/persistence.json
+					require("dbee.sources").FileSource:new(vim.fn.expand("$HOME/.config/dbee/persistence.json")),
 				},
 				editor = {
 					mappings = {
