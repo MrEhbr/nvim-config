@@ -5,6 +5,7 @@ return {
 		ft = { "sql" },
 		dependencies = {
 			"MunifTanjim/nui.nvim",
+			-- { "vanducng/cmp-dbee", opts = {} },
 		},
 		keys = {
 			{ "<M-p>", "<cmd>lua require('dbee').toggle()<cr>" },

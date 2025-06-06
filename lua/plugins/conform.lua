@@ -17,7 +17,7 @@ return {
 		notify_on_error = false,
 		format_on_save = function(bufnr)
 			local disable_filetypes = { c = true, cpp = true }
-			local timeout = 500
+			local timeout = 5000
 			local timeouts = { php = 3000 }
 			if timeouts[vim.bo[bufnr].filetype] then
 				timeout = timeouts[vim.bo[bufnr].filetype]
@@ -40,6 +40,8 @@ return {
 
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			typestript = { "prettierd", "prettier", stop_after_first = true },
+			["_"] = { "trim_whitespace" },
+			["*"] = { "injected" },
 		},
 		formatters = {
 			golines = {
@@ -84,6 +86,17 @@ return {
 					},
 				},
 				shfmt = {},
+				injected = {
+					options = {
+						ignore_errors = false,
+						lang_to_formatters = {
+							sql = { "pg_format" },
+						},
+						lang_to_ext = {
+							sql = "sql",
+						},
+					},
+				},
 			},
 		},
 	},

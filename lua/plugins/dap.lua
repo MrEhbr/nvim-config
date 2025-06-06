@@ -59,6 +59,24 @@ local function go_configurations(dap)
 		},
 	}
 end
+
+local function php_configurations(dap)
+	dap.adapters.php = {
+		type = "executable",
+		command = vim.fn.stdpath("data") .. "/mason/bin/php-debug-adapter",
+	}
+
+	dap.configurations.php = {
+		{
+			name = "PHP: Listen for Xdebug",
+			port = 9003,
+			request = "launch",
+			type = "php",
+			pathMappings = {},
+		},
+	}
+end
+
 return {
 	{
 		"mfussenegger/nvim-dap",
@@ -206,6 +224,7 @@ return {
 		config = function(_, _)
 			local dap = require("dap")
 			go_configurations(dap)
+			php_configurations(dap)
 			local configurations = require("dap.ext.vscode").getconfigs(vim.fn.getcwd() .. "/.run/launch.json")
 
 			for _, config in ipairs(configurations) do
@@ -225,6 +244,13 @@ return {
 		end,
 	},
 	{
+		"Jorenar/nvim-dap-disasm",
+		dependencies = { "igorlfs/nvim-dap-view" },
+		opts = {
+			dapview_register = true,
+		},
+	},
+	{
 		"igorlfs/nvim-dap-view",
 		event = "VeryLazy",
 		opts = {
@@ -233,12 +259,12 @@ return {
 					position = "left",
 					enabled = true,
 				},
-				sections = { "watches", "scopes", "breakpoints", "repl" },
+				sections = { "watches", "scopes", "breakpoints", "repl", "disassembly" },
 				default_section = "scopes",
 			},
 			windows = {
 				terminal = {
-					hide = { "go" },
+					hide = { "go", "php" },
 				},
 			},
 		},

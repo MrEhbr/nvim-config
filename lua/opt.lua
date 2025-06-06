@@ -25,6 +25,7 @@ opt.expandtab = true
 opt.shiftwidth = 2
 opt.tabstop = 2
 opt.softtabstop = 2
+opt.scrolloff = 10
 
 opt.ignorecase = true
 opt.smartcase = true
