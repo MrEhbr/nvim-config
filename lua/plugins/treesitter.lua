@@ -28,6 +28,7 @@ return {
 				"diff",
 				"yaml",
 				"json",
+				"just",
 			},
 			auto_install = false,
 			autotag = {

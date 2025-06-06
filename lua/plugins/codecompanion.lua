@@ -1,4 +1,4 @@
-local SYSTEM_PROMPT = require("plugins.codecompanion.prompts").SYSTEM_PROMPT
+local SYSTEM_PROMPT = require("config.codecompanion.prompts").SYSTEM_PROMPT
 
 return {
 	enabled = true,
@@ -7,7 +7,6 @@ return {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
 		"MeanderingProgrammer/render-markdown.nvim",
-		"j-hui/fidget.nvim",
 	},
 	opts = {
 		-- adapters = {
@@ -120,7 +119,7 @@ return {
 			log_level = "DEBUG",
 			system_prompt = SYSTEM_PROMPT,
 		},
-		prompt_library = require("plugins.codecompanion.prompts").PROMPT_LIBRARY,
+		prompt_library = require("config.codecompanion.prompts").PROMPT_LIBRARY,
 	},
 	keys = {
 		-- Recommend setup
@@ -216,8 +215,7 @@ return {
 		},
 	},
 	config = function(_, opts)
-		require("plugins.codecompanion.spinner"):init()
-		require("plugins.codecompanion.fidget-spinner"):init()
+		require("config.codecompanion.spinner"):init()
 
 		require("codecompanion").setup(opts)
 	end,
