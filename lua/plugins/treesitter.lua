@@ -29,6 +29,7 @@ return {
 				"yaml",
 				"json",
 				"just",
+				"dart",
 			},
 			auto_install = false,
 			autotag = {

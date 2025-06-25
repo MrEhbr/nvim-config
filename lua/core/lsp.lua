@@ -11,6 +11,7 @@ vim.lsp.enable({
 	"marksman",
 	"nil_ls",
 	"templ",
+	"dartls",
 })
 
 vim.lsp.config("*", {
