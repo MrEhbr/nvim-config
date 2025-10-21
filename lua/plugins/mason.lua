@@ -18,6 +18,7 @@ return {
 				"yaml-language-server",
 				"lua-language-server",
 				"rust-analyzer",
+				"jdtls",
 				-- Diagnostic
 				"harper-ls",
 				-- "golangci-lint",

@@ -5,10 +5,13 @@ return {
 		cli = {
 			mux = {
 				backend = "tmux",
-				enabled = false,
+				enabled = true,
 			},
 			nes = {
 				enabled = false,
+			},
+			tools = {
+				claude = { cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") } },
 			},
 		},
 	},

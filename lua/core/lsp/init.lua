@@ -5,15 +5,16 @@ vim.lsp.enable({
 	"rust-analyzer",
 	"yamlls",
 	"jsonls",
-	"harper_ls",
-	"postgres_lsp",
+	-- "harper_ls",
+	-- "postgres_lsp",
 	"tailwindcss",
 	"marksman",
 	"nil_ls",
 	"templ",
 	"dartls",
 	"biome",
-	"copilot",
+	-- "copilot",
+	"jdtls",
 })
 
 vim.lsp.inline_completion.enable()
