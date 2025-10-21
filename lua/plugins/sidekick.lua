@@ -10,8 +10,15 @@ return {
 			nes = {
 				enabled = false,
 			},
+			tools = {
+				claude = { cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") } },
+			},
 		},
 	},
+	config = function(_, opts)
+		vim.g.sidekick_nes = false
+		require("sidekick").setup(opts)
+	end,
 	keys = {
 		{
 			"<M-l>",
