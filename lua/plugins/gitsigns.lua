@@ -79,7 +79,7 @@ return {
 			})
 			map("n", "<leader>hb", function()
 				gs.blame_line({
-					full = false,
+					full = true,
 				})
 			end, {
 				desc = "Git [b]lame for Current Line",

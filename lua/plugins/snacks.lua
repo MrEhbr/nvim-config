@@ -73,6 +73,11 @@ return {
 			},
 			actions = require("config.snacks").actions,
 			enabled = true,
+			previewers = {
+				diff = {
+					style = "terminal",
+				},
+			},
 			sources = {
 				explorer = {
 					supports_live = false,
@@ -87,8 +92,6 @@ return {
 							position = "right",
 							border = "right",
 							box = "vertical",
-							{ win = "list", border = "none" },
-							{ win = "preview", title = "{preview}", height = 0.4, border = "top" },
 						},
 					},
 					win = {
@@ -100,6 +103,7 @@ return {
 								["<c-n>"] = "close",
 								["<Esc>"] = { "close", mode = { "n", "i" } },
 								["Z"] = "explorer_close_all",
+								["za"] = "explorer_close",
 								["v"] = "edit_vsplit",
 								["s"] = "edit_split",
 								["y"] = "copy_file_path",
