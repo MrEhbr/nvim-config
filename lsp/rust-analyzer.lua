@@ -1,15 +1,52 @@
 local blink = require("blink.cmp")
 
+local function get_cargo_features()
+	local client = vim.lsp.get_clients({ name = "rust-analyzer" })[1]
+	local cwd = client and client.root_dir or vim.fn.getcwd()
+
+	local output = vim.fn.system({ "cargo", "metadata", "--no-deps", "--format-version", "1", "--manifest-path", cwd .. "/Cargo.toml" })
+	if vim.v.shell_error ~= 0 then
+		return {}
+	end
+
+	local ok, data = pcall(vim.json.decode, output)
+	if not ok then
+		return {}
+	end
+
+	local features = {}
+	local seen = {}
+	for _, pkg in ipairs(data.packages or {}) do
+		for feat, _ in pairs(pkg.features or {}) do
+			if not seen[feat] then
+				seen[feat] = true
+				table.insert(features, feat)
+			end
+		end
+	end
+
+	table.sort(features)
+	return features
+end
+
+local function complete_features(arg)
+	local features = get_cargo_features()
+	return vim.tbl_filter(function(f)
+		return f:sub(1, #arg) == arg
+	end, features)
+end
+
 local function reload_workspace(bufnr)
-	local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "rust_analyzer" })
+	local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "rust-analyzer" })
 	for _, client in ipairs(clients) do
 		vim.notify("Reloading Cargo Workspace")
-		client.request("rust-analyzer/reloadWorkspace", nil, function(err)
+		---@diagnostic disable-next-line: param-type-mismatch
+		client:request("rust-analyzer/reloadWorkspace", nil, function(err)
 			if err then
 				error(tostring(err))
 			end
 			vim.notify("Cargo workspace reloaded")
-		end, 0)
+		end)
 	end
 end
 
@@ -24,7 +61,7 @@ local function is_library(fname)
 
 	for _, item in ipairs({ toolchains, registry, git_registry }) do
 		if vim.fs.relpath(item, fname) then
-			local clients = vim.lsp.get_clients({ name = "rust_analyzer" })
+			local clients = vim.lsp.get_clients({ name = "rust-analyzer" })
 			return #clients > 0 and clients[#clients].config.root_dir or nil
 		end
 	end
@@ -83,6 +120,9 @@ return {
 	end,
 	settings = {
 		["rust-analyzer"] = {
+			cargo = {
+				features = {},
+			},
 			check = {
 				command = "clippy",
 			},
@@ -118,5 +158,36 @@ return {
 		vim.api.nvim_buf_create_user_command(0, "LspCargoReload", function()
 			reload_workspace(0)
 		end, { desc = "Reload current cargo workspace" })
+
+		vim.api.nvim_buf_create_user_command(0, "LspCargoFeatures", function(opts)
+			---@type table<string, any>
+			local settings = vim.lsp.get_clients({ name = "rust-analyzer" })[1].config.settings
+			settings["rust-analyzer"].cargo.features = opts.fargs
+			vim.lsp.enable("rust-analyzer", false)
+			vim.lsp.config("rust-analyzer", { settings = settings })
+			vim.lsp.enable("rust-analyzer")
+		end, { desc = "Set rust-analyzer cargo features", nargs = "*", complete = complete_features })
+
+		vim.api.nvim_buf_create_user_command(0, "LspCargoFeaturesAll", function()
+			---@type table<string, any>
+			local settings = vim.lsp.get_clients({ name = "rust-analyzer" })[1].config.settings
+			settings["rust-analyzer"].cargo.features = "all"
+			vim.lsp.enable("rust-analyzer", false)
+			vim.lsp.config("rust-analyzer", { settings = settings })
+			vim.lsp.enable("rust-analyzer")
+		end, { desc = "Enable all rust-analyzer cargo features" })
+
+		vim.api.nvim_buf_create_user_command(0, "LspCargoFeaturesList", function()
+			---@type table<string, any>
+			local settings = vim.lsp.get_clients({ name = "rust-analyzer" })[1].config.settings
+			local features = settings["rust-analyzer"].cargo.features
+			if features == "all" then
+				print("all features enabled")
+			elseif type(features) == "table" and #features > 0 then
+				print("[" .. table.concat(features, ", ") .. "]")
+			else
+				print("no features enabled")
+			end
+		end, { desc = "List rust-analyzer cargo features" })
 	end,
 }

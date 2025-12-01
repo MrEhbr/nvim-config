@@ -17,6 +17,11 @@ local layout = {
 local exclude = {
 	"**/mocks/*",
 	"**/node_modules/*",
+	"**/%.git/*",
+	"**/target/*",
+	"**/dist/*",
+	"**/build/*",
+	"**/coverage/*",
 	"**/.yarn/cache/*",
 	"**/.yarn/releases/*",
 	"**/.pnpm-store/*",

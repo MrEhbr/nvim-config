@@ -114,22 +114,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.lsp.codelens.refresh()
 		end
 
-		-- if client and client:supports_method("textDocument/inlineCompletion") then
-		-- 	vim.lsp.inline_completion.enable(true)
-		-- 	vim.keymap.set("i", "<M-l>", function()
-		-- 		if not vim.lsp.inline_completion.get() then
-		-- 			return "<M-l>"
-		-- 		end
-		-- 	end, { expr = true, desc = "Accept Inline Completion" })
+		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, event.buf) then
+			vim.keymap.set("i", "<M-]>", function()
+				vim.lsp.inline_completion.select({ count = 1 })
+			end, { buffer = event.buf, desc = "Next inline completion" })
 
-		vim.keymap.set("i", "<M-]>", function()
-			vim.lsp.inline_completion.select({ count = 1 })
-		end)
-
-		vim.keymap.set("i", "<M-[>", function()
-			vim.lsp.inline_completion.select({ count = -1 })
-		end)
-		-- end
+			vim.keymap.set("i", "<M-[>", function()
+				vim.lsp.inline_completion.select({ count = -1 })
+			end, { buffer = event.buf, desc = "Previous inline completion" })
+		end
 
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
 			local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = false })
@@ -156,99 +149,46 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				end,
 			})
 		end
-
-		-- vim.api.nvim_create_autocmd({ "CursorHold" }, {
-		-- 	group = vim.api.nvim_create_augroup("float_diagnostic", { clear = true }),
-		-- 	callback = function()
-		-- 		vim.diagnostic.open_float(nil, { focus = false })
-		-- 	end,
-		-- })
 	end,
 })
 
--- Extras
+-- Commands
 
-local function restart_lsp(bufnr)
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
-	local clients
-	if vim.lsp.get_clients then
-		clients = vim.lsp.get_clients({ bufnr = bufnr })
-	else
-		---@diagnostic disable-next-line: deprecated
-		clients = vim.lsp.get_active_clients({ bufnr = bufnr })
-	end
-
-	for _, client in ipairs(clients) do
-		vim.lsp.stop_client(client.id)
-	end
-
-	vim.defer_fn(function()
-		vim.cmd("edit")
-	end, 100)
+local complete_client = function(arg)
+	return vim.iter(vim.lsp.get_clients())
+		:map(function(client)
+			return client.name
+		end)
+		:filter(function(name)
+			return name:sub(1, #arg) == arg
+		end)
+		:totable()
 end
 
-vim.api.nvim_create_user_command("LspRestart", function()
-	restart_lsp()
-end, {})
-
-local function lsp_status()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local clients = vim.lsp.get_clients and vim.lsp.get_clients({ bufnr = bufnr })
-		or vim.lsp.get_active_clients({ bufnr = bufnr })
-
-	if #clients == 0 then
-		print("󰅚 No LSP clients attached")
-		return
-	end
-
-	print("󰒋 LSP Status for buffer " .. bufnr .. ":")
-	print("─────────────────────────────────")
-
-	for i, client in ipairs(clients) do
-		print(string.format("󰌘 Client %d: %s (ID: %d)", i, client.name, client.id))
-		print("  Root: " .. (client.config.root_dir or "N/A"))
-		print("  Filetypes: " .. table.concat(client.config.filetypes or {}, ", "))
-
-		-- Check capabilities
-		local caps = client.server_capabilities
-		if not caps then
-			print("  No capabilities reported")
-			return
-		end
-		local features = {}
-		if caps.completionProvider then
-			table.insert(features, "completion")
-		end
-		if caps.hoverProvider then
-			table.insert(features, "hover")
-		end
-		if caps.definitionProvider then
-			table.insert(features, "definition")
-		end
-		if caps.referencesProvider then
-			table.insert(features, "references")
-		end
-		if caps.renameProvider then
-			table.insert(features, "rename")
-		end
-		if caps.codeActionProvider then
-			table.insert(features, "code_action")
-		end
-		if caps.documentFormattingProvider then
-			table.insert(features, "formatting")
-		end
-
-		print("  Features: " .. table.concat(features, ", "))
-		print("")
-	end
+local complete_config = function(arg)
+	return vim.iter(vim.api.nvim_get_runtime_file(("lsp/%s*.lua"):format(arg), true))
+		:map(function(path)
+			local file_name = path:match("[^/]*.lua$")
+			return file_name:sub(0, #file_name - 4)
+		end)
+		:totable()
 end
 
-vim.api.nvim_create_user_command("LspStatus", lsp_status, { desc = "Show detailed LSP status" })
-
-local function check_lsp_capabilities()
+vim.api.nvim_create_user_command("LspStatus", function()
 	local bufnr = vim.api.nvim_get_current_buf()
-	local clients = vim.lsp.get_clients and vim.lsp.get_clients({ bufnr = bufnr })
-		or vim.lsp.get_active_clients({ bufnr = bufnr })
+	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+
+	local diagnostics = vim.diagnostic.get(bufnr)
+	local errors = #vim.tbl_filter(function(d)
+		return d.severity == vim.diagnostic.severity.ERROR
+	end, diagnostics)
+	local warnings = #vim.tbl_filter(function(d)
+		return d.severity == vim.diagnostic.severity.WARN
+	end, diagnostics)
+
+	print(string.format("Buffer: %d | Filetype: %s", bufnr, vim.bo.filetype))
+	print(string.format("Diagnostics: %d errors, %d warnings", errors, warnings))
+	print(string.rep("-", 40))
 
 	if #clients == 0 then
 		print("No LSP clients attached")
@@ -256,175 +196,100 @@ local function check_lsp_capabilities()
 	end
 
 	for _, client in ipairs(clients) do
-		print("Capabilities for " .. client.name .. ":")
-		local caps = client.server_capabilities
-		if not caps then
-			print("  No capabilities reported")
-			return
-		end
-
-		local capability_list = {
-			{ "Completion", caps.completionProvider },
-			{ "Hover", caps.hoverProvider },
-			{ "Signature Help", caps.signatureHelpProvider },
-			{ "Go to Definition", caps.definitionProvider },
-			{ "Go to Declaration", caps.declarationProvider },
-			{ "Go to Implementation", caps.implementationProvider },
-			{ "Go to Type Definition", caps.typeDefinitionProvider },
-			{ "Find References", caps.referencesProvider },
-			{ "Document Highlight", caps.documentHighlightProvider },
-			{ "Document Symbol", caps.documentSymbolProvider },
-			{ "Workspace Symbol", caps.workspaceSymbolProvider },
-			{ "Code Action", caps.codeActionProvider },
-			{ "Code Lens", caps.codeLensProvider },
-			{ "Document Formatting", caps.documentFormattingProvider },
-			{ "Document Range Formatting", caps.documentRangeFormattingProvider },
-			{ "Rename", caps.renameProvider },
-			{ "Folding Range", caps.foldingRangeProvider },
-			{ "Selection Range", caps.selectionRangeProvider },
-		}
-
-		for _, cap in ipairs(capability_list) do
-			local status = cap[2] and "✓" or "✗"
-			print(string.format("  %s %s", status, cap[1]))
-		end
-		print("")
-	end
-end
-
-vim.api.nvim_create_user_command("LspCapabilities", check_lsp_capabilities, { desc = "Show LSP capabilities" })
-
-local function lsp_diagnostics_info()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local diagnostics = vim.diagnostic.get(bufnr)
-
-	local counts = { ERROR = 0, WARN = 0, INFO = 0, HINT = 0 }
-
-	for _, diagnostic in ipairs(diagnostics) do
-		local severity = vim.diagnostic.severity[diagnostic.severity]
-		counts[severity] = counts[severity] + 1
+		local status = client:is_stopped() and "stopped" or "running"
+		local buf_count = vim.tbl_count(client.attached_buffers or {})
+		print(string.format("%s [%s] (id: %d)", client.name, status, client.id))
+		print(string.format("  root: %s", client.root_dir or "nil"))
+		print(string.format("  buffers: %d", buf_count))
 	end
 
-	print("󰒡 Diagnostics for current buffer:")
-	print("  Errors: " .. counts.ERROR)
-	print("  Warnings: " .. counts.WARN)
-	print("  Info: " .. counts.INFO)
-	print("  Hints: " .. counts.HINT)
-	print("  Total: " .. #diagnostics)
-end
+	print(string.rep("-", 40))
+	print(string.format("Log: %s", vim.lsp.log.get_filename()))
+end, { desc = "Show LSP clients status" })
 
-vim.api.nvim_create_user_command("LspDiagnostics", lsp_diagnostics_info, { desc = "Show LSP diagnostics count" })
+vim.api.nvim_create_user_command("LspStart", function(info)
+	local servers = info.fargs
 
-local function lsp_info()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local clients = vim.lsp.get_clients and vim.lsp.get_clients({ bufnr = bufnr })
-		or vim.lsp.get_active_clients({ bufnr = bufnr })
-
-	print("═══════════════════════════════════")
-	print("           LSP INFORMATION          ")
-	print("═══════════════════════════════════")
-	print("")
-
-	-- Basic info
-	print("󰈙 Language client log: " .. vim.lsp.get_log_path())
-	print("󰈔 Detected filetype: " .. vim.bo.filetype)
-	print("󰈮 Buffer: " .. bufnr)
-	print("󰈔 Root directory: " .. (vim.fn.getcwd() or "N/A"))
-	print("")
-
-	if #clients == 0 then
-		print("󰅚 No LSP clients attached to buffer " .. bufnr)
-		print("")
-		print("Possible reasons:")
-		print("  • No language server installed for " .. vim.bo.filetype)
-		print("  • Language server not configured")
-		print("  • Not in a project root directory")
-		print("  • File type not recognized")
-		return
-	end
-
-	print("󰒋 LSP clients attached to buffer " .. bufnr .. ":")
-	print("─────────────────────────────────")
-
-	for i, client in ipairs(clients) do
-		print(string.format("󰌘 Client %d: %s", i, client.name))
-		print("  ID: " .. client.id)
-		print("  Root dir: " .. (client.config.root_dir or "Not set"))
-		print("  Command: " .. table.concat(client.config.cmd or {}, " "))
-		print("  Filetypes: " .. table.concat(client.config.filetypes or {}, ", "))
-
-		-- Server status
-		if client.is_stopped() then
-			print("  Status: 󰅚 Stopped")
-		else
-			print("  Status: 󰄬 Running")
-		end
-
-		-- Workspace folders
-		if client.workspace_folders and #client.workspace_folders > 0 then
-			print("  Workspace folders:")
-			for _, folder in ipairs(client.workspace_folders) do
-				print("    • " .. folder.name)
+	if #servers == 0 then
+		local filetype = vim.bo.filetype
+		for _, name in ipairs(complete_config("")) do
+			local config = vim.lsp.config[name]
+			if config and config.filetypes and vim.tbl_contains(config.filetypes, filetype) then
+				table.insert(servers, name)
 			end
 		end
-
-		-- Attached buffers count
-		local attached_buffers = {}
-		for buf, _ in pairs(client.attached_buffers or {}) do
-			table.insert(attached_buffers, buf)
-		end
-		print("  Attached buffers: " .. #attached_buffers)
-
-		-- Key capabilities
-		local caps = client.server_capabilities
-		local key_features = {}
-		if caps.completionProvider then
-			table.insert(key_features, "completion")
-		end
-		if caps.hoverProvider then
-			table.insert(key_features, "hover")
-		end
-		if caps.definitionProvider then
-			table.insert(key_features, "definition")
-		end
-		if caps.documentFormattingProvider then
-			table.insert(key_features, "formatting")
-		end
-		if caps.codeActionProvider then
-			table.insert(key_features, "code_action")
-		end
-
-		if #key_features > 0 then
-			print("  Key features: " .. table.concat(key_features, ", "))
-		end
-
-		print("")
 	end
 
-	-- Diagnostics summary
-	local diagnostics = vim.diagnostic.get(bufnr)
-	if #diagnostics > 0 then
-		print("󰒡 Diagnostics Summary:")
-		local counts = { ERROR = 0, WARN = 0, INFO = 0, HINT = 0 }
+	vim.lsp.enable(servers)
+end, {
+	desc = "Enable and launch a language server",
+	nargs = "?",
+	complete = complete_config,
+})
 
-		for _, diagnostic in ipairs(diagnostics) do
-			local severity = vim.diagnostic.severity[diagnostic.severity]
-			counts[severity] = counts[severity] + 1
-		end
+vim.api.nvim_create_user_command("LspRestart", function(info)
+	local client_names = info.fargs
 
-		print("  󰅚 Errors: " .. counts.ERROR)
-		print("  󰀪 Warnings: " .. counts.WARN)
-		print("  󰋽 Info: " .. counts.INFO)
-		print("  󰌶 Hints: " .. counts.HINT)
-		print("  Total: " .. #diagnostics)
-	else
-		print("󰄬 No diagnostics")
+	if #client_names == 0 then
+		client_names = vim.iter(vim.lsp.get_clients())
+			:map(function(client)
+				return client.name
+			end)
+			:totable()
 	end
 
-	print("")
-	print("Use :LspLog to view detailed logs")
-	print("Use :LspCapabilities for full capability list")
-end
+	for name in vim.iter(client_names) do
+		if vim.lsp.config[name] == nil then
+			vim.notify(("Invalid server name '%s'"):format(name))
+		else
+			vim.lsp.enable(name, false)
+			if info.bang then
+				vim.iter(vim.lsp.get_clients({ name = name })):each(function(client)
+					client:stop(true)
+				end)
+			end
+		end
+	end
 
--- Create command
-vim.api.nvim_create_user_command("LspInfo", lsp_info, { desc = "Show comprehensive LSP information" })
+	local timer = assert(vim.uv.new_timer())
+	timer:start(500, 0, function()
+		for name in vim.iter(client_names) do
+			vim.schedule_wrap(vim.lsp.enable)(name)
+		end
+	end)
+end, {
+	desc = "Restart the given client",
+	nargs = "?",
+	bang = true,
+	complete = complete_client,
+})
+
+vim.api.nvim_create_user_command("LspStop", function(info)
+	local client_names = info.fargs
+
+	if #client_names == 0 then
+		client_names = vim.iter(vim.lsp.get_clients())
+			:map(function(client)
+				return client.name
+			end)
+			:totable()
+	end
+
+	for name in vim.iter(client_names) do
+		if vim.lsp.config[name] == nil then
+			vim.notify(("Invalid server name '%s'"):format(name))
+		else
+			vim.lsp.enable(name, false)
+			if info.bang then
+				vim.iter(vim.lsp.get_clients({ name = name })):each(function(client)
+					client:stop(true)
+				end)
+			end
+		end
+	end
+end, {
+	desc = "Disable and stop the given client",
+	nargs = "?",
+	bang = true,
+	complete = complete_client,
+})
