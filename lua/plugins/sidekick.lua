@@ -21,6 +21,23 @@ return {
 	end,
 	keys = {
 		{
+			"<M-l>",
+			function()
+				if require("sidekick").nes_jump_or_apply() then
+					return
+				end
+
+				if vim.lsp.inline_completion.get() then
+					return
+				end
+
+				return "<M-l>"
+			end,
+			mode = { "n", "x", "i", "t" },
+			expr = true,
+			desc = "Goto/Apply Next Edit Suggestion",
+		},
+		{
 			"<M-a>",
 			function()
 				require("sidekick.cli").toggle({ filter = { installed = true } })

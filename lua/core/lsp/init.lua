@@ -13,7 +13,7 @@ vim.lsp.enable({
 	"templ",
 	"dartls",
 	"biome",
-	-- "copilot",
+	"copilot",
 	"jdtls",
 })
 
@@ -155,12 +155,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Commands
 
 local complete_client = function(arg)
+	local seen = {}
 	return vim.iter(vim.lsp.get_clients())
 		:map(function(client)
 			return client.name
 		end)
 		:filter(function(name)
-			return name:sub(1, #arg) == arg
+			if seen[name] or name:sub(1, #arg) ~= arg then
+				return false
+			end
+			seen[name] = true
+			return true
 		end)
 		:totable()
 end

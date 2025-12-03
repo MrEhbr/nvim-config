@@ -22,6 +22,7 @@ return {
 				-- Diagnostic
 				"harper-ls",
 				-- "golangci-lint",
+				"copilot-language-server",
 
 				-- Formatters
 				"biome",
