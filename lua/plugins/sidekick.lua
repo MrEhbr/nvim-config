@@ -13,6 +13,24 @@ return {
 			tools = {
 				claude = { cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") } },
 			},
+			win = {
+				split = {
+					width = 85,
+				},
+			},
+			prompts = {
+				dir = "{dir}",
+			},
+			context = {
+				dir = function(ctx)
+					local Loc = require("sidekick.cli.context.location")
+					if not Loc.is_file(ctx.buf) then return end
+					local name = vim.api.nvim_buf_get_name(ctx.buf)
+					local rel = vim.fs.relpath(ctx.cwd, name)
+					local dir = vim.fs.dirname(rel or name)
+					return { { { "@", "SidekickLocDelim" }, { dir, "SidekickLocFile" } } }
+				end,
+			},
 		},
 	},
 	config = function(_, opts)
