@@ -15,6 +15,7 @@ return {
 	},
 	opts = {
 		notify_on_error = false,
+		log_level = vim.log.levels.DEBUG,
 		format_on_save = function(bufnr)
 			local disable_filetypes = { c = true, cpp = true }
 			local timeout = 5000
@@ -35,7 +36,7 @@ return {
 			markdown = { "markdownlint", "cbfmt" },
 			nix = { "nixpkgs_fmt" },
 			proto = { "buf" },
-			sql = { "pg_format" },
+			sql = { "sqruff" },
 			php = { "pint" },
 			go = { "golines", "goimports", "gofumpt" },
 
@@ -90,15 +91,19 @@ return {
 				templ = {
 					cmd = { "go", "tool", "templ" },
 				},
-				injected = {
-					options = {
-						ignore_errors = false,
-						lang_to_formatters = {
-							sql = { "pg_format" },
-						},
-						lang_to_ext = {
-							sql = "sql",
-						},
+			},
+			injected = {
+				options = {
+					ignore_errors = false,
+					debug = true,
+					lang_to_formatters = {
+						sql = { "sqruff" },
+					},
+					lang_to_ft = {
+						sql = "sql",
+					},
+					lang_to_ext = {
+						sql = "sql",
 					},
 				},
 			},
