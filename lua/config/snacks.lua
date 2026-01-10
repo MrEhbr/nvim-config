@@ -1,7 +1,7 @@
 local M = {}
 
 M.actions = {
-	qflist_trouble = function(picker)
+	qflist = function(picker)
 		picker:close()
 		local sel = picker:selected()
 		local items = #sel > 0 and sel or picker:items()
@@ -20,7 +20,7 @@ M.actions = {
 			}
 		end
 		vim.fn.setqflist(qf)
-		vim.cmd("Trouble qflist")
+		vim.cmd("copen")
 	end,
 }
 

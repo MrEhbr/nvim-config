@@ -31,10 +31,6 @@ autocmd("BufReadPost", {
 	end,
 })
 
--- auto close brackets
--- this
-autocmd("FileType", { pattern = "man", command = [[nnoremap <buffer><silent> q :quit<CR>]] })
-
 -- show cursor line only in active window
 local cursorGrp = vim.api.nvim_create_augroup("CursorLine", { clear = true })
 autocmd({ "InsertLeave", "WinEnter" }, {
@@ -114,5 +110,23 @@ autocmd("LspProgress", {
 					or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
 			end,
 		})
+	end,
+})
+
+-- Auto-create parent directories when saving
+autocmd("BufWritePre", {
+	callback = function(event)
+		if event.match:match("^%w%w+:[\\/][\\/]") then
+			return
+		end
+		local file = vim.uv.fs_realpath(event.match) or event.match
+		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+	end,
+})
+
+-- Highlight on yank
+autocmd("TextYankPost", {
+	callback = function()
+		vim.hl.on_yank({ timeout = 200 })
 	end,
 })

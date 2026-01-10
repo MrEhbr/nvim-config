@@ -1,24 +1,39 @@
 return {
 	"ThePrimeagen/harpoon",
-	lazy = false,
+	branch = "harpoon2",
+	dependencies = { "nvim-lua/plenary.nvim" },
 	config = function()
-		require("harpoon").setup({})
-		local map = function(keys, func, desc)
-			vim.keymap.set("n", keys, func, {
-				desc = desc,
-			})
-		end
+		local harpoon = require("harpoon")
+		harpoon:setup()
 
-		map("<leader>ma", require("harpoon.mark").add_file, "[a]dd Harpoon [m]ark")
-		map("<leader>mc", require("harpoon.mark").clear_all, "[c]lear All Harpoon [m]arks")
-		map("<leader>md", require("harpoon.mark").rm_file, "[d]elete Harpoon [m]ark")
-		map("<leader>ml", require("harpoon.ui").toggle_quick_menu, "[l]ist Harpoon [m]arks")
-		map("<leader>mj", require("harpoon.ui").nav_next, "Next Harpoon [m]ark")
-		map("<leader>mk", require("harpoon.ui").nav_prev, "Previous Harpoon [m]ark")
+		vim.keymap.set("n", "<leader>ma", function()
+			harpoon:list():add()
+		end, { desc = "[a]dd Harpoon [m]ark" })
+
+		vim.keymap.set("n", "<leader>mc", function()
+			harpoon:list():clear()
+		end, { desc = "[c]lear All Harpoon [m]arks" })
+
+		vim.keymap.set("n", "<leader>md", function()
+			harpoon:list():remove()
+		end, { desc = "[d]elete Harpoon [m]ark" })
+
+		vim.keymap.set("n", "<leader>ml", function()
+			harpoon.ui:toggle_quick_menu(harpoon:list())
+		end, { desc = "[l]ist Harpoon [m]arks" })
+
+		vim.keymap.set("n", "<leader>mj", function()
+			harpoon:list():next()
+		end, { desc = "Next Harpoon [m]ark" })
+
+		vim.keymap.set("n", "<leader>mk", function()
+			harpoon:list():prev()
+		end, { desc = "Previous Harpoon [m]ark" })
+
 		for i = 1, 5 do
-			map("<leader>" .. i, function()
-				require("harpoon.ui").nav_file(i)
-			end, "[" .. i .. "]st Harpoon Mark")
+			vim.keymap.set("n", "<leader>" .. i, function()
+				harpoon:list():select(i)
+			end, { desc = "[" .. i .. "] Harpoon Mark" })
 		end
 	end,
 }

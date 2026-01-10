@@ -5,6 +5,7 @@ g.mapleader = " "
 g.maplocalleader = " "
 g.loaded_ruby_provider = 0
 g.omni_sql_no_default_maps = 1
+g.autoformat = true
 
 -- Set highlight on search
 opt.hlsearch = true
@@ -15,7 +16,7 @@ opt.hlsearch = true
 opt.clipboard = "unnamedplus"
 
 opt.relativenumber = true
-vim.opt_local.conceallevel = 2
+opt.conceallevel = 2
 vim.filetype.add({ extension = { templ = "templ", bru = "bruno", tmpl = "gotmpl" } })
 
 opt.showmode = false
@@ -58,3 +59,30 @@ vim.o.foldenable = true
 
 -- Floating border
 vim.o.winborder = "rounded"
+
+-- Persistent undo (survive restarts)
+opt.undofile = true
+opt.undolevels = 10000
+
+-- Better splits
+opt.splitright = true
+opt.splitbelow = true
+opt.splitkeep = "screen"
+
+-- Prevent layout shift from signs/diagnostics
+opt.signcolumn = "yes"
+
+-- Live substitution preview
+opt.inccommand = "split"
+
+-- Cursor
+opt.cursorline = true
+opt.virtualedit = "block"
+
+-- Smoother experience
+opt.smoothscroll = true
+opt.sidescrolloff = 8
+opt.jumpoptions = "view"
+
+-- Confirm save instead of error
+opt.confirm = true

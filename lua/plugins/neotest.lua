@@ -5,7 +5,6 @@ return {
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
-			"antoinemadec/FixCursorHold.nvim",
 			"nvim-treesitter/nvim-treesitter",
 
 			"nvim-neotest/neotest-plenary",
@@ -17,9 +16,8 @@ return {
 		opts = function(_, opts)
 			opts.adapters = opts.adapters or {}
 			opts.adapters["neotest-golang"] = {
-				log_level = vim.log.levels.DEBUG,
 				runner = "gotestsum",
-				gotestsum_args = { "--format=testdox", "--debug" },
+				gotestsum_args = { "--format=testdox" },
 				go_test_args = {
 					"-v",
 					"-race",

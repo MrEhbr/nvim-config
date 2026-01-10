@@ -19,7 +19,6 @@ local copilot_icons = {
 return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = {
-		"AndreM222/copilot-lualine",
 		"nvim-tree/nvim-web-devicons",
 	},
 	config = function()

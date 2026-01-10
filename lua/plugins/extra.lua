@@ -3,52 +3,17 @@ return {
 	{ "tpope/vim-sleuth", lazy = false },
 	{ "tpope/vim-obsession", lazy = false },
 	{
-		"nacro90/numb.nvim",
-		lazy = false,
-		config = true,
-	},
-	{
 		"direnv/direnv.vim",
 		lazy = false,
 	},
-	{ "folke/which-key.nvim", lzay = false, opts = {} },
+	{ "folke/which-key.nvim", lazy = false, opts = {} },
 	{
 		"nvchad/showkeys",
 		cmd = "ShowkeysToggle",
-		lazy = false,
 		opts = {
 			timeout = 1,
 			maxkeys = 6,
-			-- bottom-left, bottom-right, bottom-center, top-left, top-right, top-center
 			position = "bottom-right",
-		},
-	},
-	{
-		"windwp/nvim-spectre",
-		enabled = true,
-		event = "BufRead",
-		keys = {
-			{
-				"<leader>Rr",
-				function()
-					require("spectre").open()
-				end,
-				desc = "Replace",
-			},
-			{
-				"<leader>Rw",
-				function()
-					require("spectre").open_visual({ select_word = true })
-				end,
-				desc = "Replace Word",
-			},
-			{
-				"<leader>Rf",
-				function()
-					require("spectre").open_file_search()
-				end,
-				desc = "Replace Buffer",
-			},
 		},
 	},
 	{
@@ -94,10 +59,26 @@ return {
 	},
 	{ "hiphish/rainbow-delimiters.nvim", submodules = false, lazy = true, event = "BufReadPre" },
 	{
-		"m4xshen/hardtime.nvim",
-		lazy = false,
-		enabled = false,
-		dependencies = { "MunifTanjim/nui.nvim" },
+		"folke/flash.nvim",
+		event = "VeryLazy",
 		opts = {},
+		keys = {
+			{ "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+			{ "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+			{ "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+			{ "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+		},
+	},
+	{
+		"stevearc/oil.nvim",
+		opts = {
+			view_options = { show_hidden = true },
+			keymaps = {
+				["q"] = "actions.close",
+				["<C-v>"] = { "actions.select", opts = { vertical = true } },
+				["<C-s>"] = { "actions.select", opts = { horizontal = true } },
+			},
+		},
+		keys = { { "-", "<cmd>Oil<cr>", desc = "Open parent directory" } },
 	},
 }

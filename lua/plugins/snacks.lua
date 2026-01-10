@@ -27,9 +27,11 @@ local exclude = {
 	"**/.pnpm-store/*",
 }
 
-local function filter_exclude(item, filter)
+local function filter_exclude(item)
 	for _, pattern in ipairs(exclude) do
-		return not (vim.fn.match(item.file, pattern) >= 0)
+		if vim.fn.match(item.file, pattern) >= 0 then
+			return false
+		end
 	end
 	return true
 end
@@ -52,6 +54,7 @@ return {
 		explorer = {
 			enabled = true,
 			replace_netrw = true,
+			trash = true,
 		},
 		indent = { enabled = true },
 		notifier = {
@@ -152,7 +155,7 @@ return {
 			win = {
 				input = {
 					keys = {
-						["<C-q>"] = { "qflist_trouble", mode = { "i", "n" } },
+						["<C-q>"] = { "qflist", mode = { "i", "n" } },
 					},
 				},
 			},
@@ -426,6 +429,15 @@ return {
 				Snacks.toggle.inlay_hints():map("<leader>uH")
 				Snacks.toggle.indent():map("<leader>ug")
 				Snacks.toggle.dim():map("<leader>uD")
+				Snacks.toggle({
+					name = "Auto Format",
+					get = function()
+						return vim.g.autoformat
+					end,
+					set = function(state)
+						vim.g.autoformat = state
+					end,
+				}):map("<leader>uf")
 
 				vim.api.nvim_create_user_command("Zen", Snacks.zen.zen, { desc = "Toggle Zen Mode" })
 			end,

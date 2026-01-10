@@ -15,8 +15,10 @@ return {
 	},
 	opts = {
 		notify_on_error = false,
-		log_level = vim.log.levels.DEBUG,
 		format_on_save = function(bufnr)
+			if not vim.g.autoformat then
+				return false
+			end
 			local disable_filetypes = { c = true, cpp = true }
 			local timeout = 5000
 			local timeouts = { php = 3000 }
@@ -41,7 +43,7 @@ return {
 			go = { "golines", "goimports", "gofumpt" },
 
 			javascript = { "prettierd", "prettier", stop_after_first = true },
-			typestript = { "prettierd", "prettier", stop_after_first = true },
+			typescript = { "prettierd", "prettier", stop_after_first = true },
 			["_"] = { "trim_whitespace" },
 			["*"] = { "injected" },
 		},
@@ -73,24 +75,13 @@ return {
 					"4",
 					"--no-space-function",
 					"--nogrouping",
-					-- "--wrap-after",
-					-- "1",
 					"--keep-newline",
-					-- "--wrap-limit",
-					-- "160",
 				},
-				golines = {
-					prepend_args = {
-						"-m",
-						"160",
-						"--reformat-tags",
-						"--base-formatter=gofumpt",
-					},
-				},
-				shfmt = {},
-				templ = {
-					cmd = { "go", "tool", "templ" },
-				},
+			},
+			templ = {
+				command = "templ",
+				args = { "fmt", "-stdin" },
+				stdin = true,
 			},
 			injected = {
 				options = {

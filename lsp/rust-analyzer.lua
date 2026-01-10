@@ -1,4 +1,4 @@
-local blink = require("blink.cmp")
+local lsp_utils = require("config.lsp")
 
 local function get_cargo_features()
 	local client = vim.lsp.get_clients({ name = "rust-analyzer" })[1]
@@ -132,21 +132,11 @@ return {
 		},
 	},
 
-	capabilities = vim.tbl_deep_extend(
-		"force",
-		{},
-		vim.lsp.protocol.make_client_capabilities(),
-		blink.get_lsp_capabilities(),
-		{
-			fileOperations = {
-				didRename = true,
-				willRename = true,
-			},
-			experimental = {
-				serverStatusNotification = true,
-			},
-		}
-	),
+	capabilities = vim.tbl_deep_extend("force", lsp_utils.capabilities, {
+		experimental = {
+			serverStatusNotification = true,
+		},
+	}),
 
 	before_init = function(init_params, config)
 		-- See https://github.com/rust-lang/rust-analyzer/blob/eb5da56d839ae0a9e9f50774fa3eb78eb0964550/docs/dev/lsp-extensions.md?plain=1#L26

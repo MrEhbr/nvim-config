@@ -1,8 +1,6 @@
 local validate = vim.validate
 local nvim_eleven = vim.fn.has("nvim-0.11") == 1
 
-local iswin = vim.uv.os_uname().version:match("Windows")
-
 local M = { path = {} }
 
 local function escape_wildcards(path)

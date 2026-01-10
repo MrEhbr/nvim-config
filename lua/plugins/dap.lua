@@ -294,25 +294,20 @@ return {
 	},
 	{
 		"theHamsta/nvim-dap-virtual-text",
-		config = function()
-			require("nvim-dap-virtual-text").setup({
-				enabled = false,
-				enabled_commands = true,
-				highlight_changed_variables = true,
-				highlight_new_as_changed = true,
-				show_stop_reason = false,
-				commented = false,
-				only_first_definition = true,
-				all_references = false,
-				clear_on_continue = true,
-				virt_text_pos = "eol",
-
-				-- experimental features:
-				all_frames = false, -- Show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-				virt_lines = true, -- Show virtual lines instead of virtual text (will flicker!)
-				virt_text_win_col = nil, -- Position the virtual text at a fixed window column (starting from the first text column) ,
-				-- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-			})
-		end,
+		dependencies = { "mfussenegger/nvim-dap" },
+		opts = {
+			enabled = true,
+			enabled_commands = true,
+			highlight_changed_variables = true,
+			highlight_new_as_changed = true,
+			show_stop_reason = true,
+			commented = false,
+			only_first_definition = true,
+			all_references = false,
+			clear_on_continue = true,
+			virt_text_pos = "eol",
+			all_frames = false,
+			virt_lines = false,
+		},
 	},
 }
