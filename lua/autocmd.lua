@@ -116,9 +116,3 @@ autocmd("BufWritePre", {
 		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 	end,
 })
-
-autocmd("TextYankPost", {
-	callback = function()
-		vim.hl.on_yank({ timeout = 200 })
-	end,
-})
