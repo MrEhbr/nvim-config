@@ -1,4 +1,46 @@
+# Neovim generated files
 tags
-test.sh
 .luarc.json
+spell/*.add.spl
+
+# Swap and backup files
+*.swp
+*.swo
+*~
+*.bak
+
+# Local configuration (machine-specific)
+lua/local.lua
+lua/local/
+*.local.lua
+
+# Session and view files
+Session.vim
+.session/
+.sessions/
+
+# Test and debug files
+test.sh
+debug.log
+.nvim-dap.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.idea/
+.vscode/
+*.code-workspace
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Nix build artifacts
+result
+result-*
+
+# Misc
 nvim
+*.log
+.netrwhist
