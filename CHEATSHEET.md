@@ -47,7 +47,7 @@
 | Key | Action |
 |-----|--------|
 | `K` | Hover documentation |
-| `gs` | Signature help |
+| `<C-k>` | Signature help (also in insert mode) |
 | `gd` | Go to definition |
 | `gD` | Go to declaration |
 | `gr` | Find references |
@@ -137,17 +137,57 @@
 
 ## Text Manipulation (Mini.nvim)
 
+### Surround (gs prefix)
+
 | Key | Action |
 |-----|--------|
-| `ys{motion}{char}` | Add surround |
-| `ds{char}` | Delete surround |
-| `cs{old}{new}` | Change surround |
-| `<leader>/` | Toggle comment |
+| `gsa{motion}{char}` | Add surround |
+| `gsd{char}` | Delete surround |
+| `gsr{old}{new}` | Replace surround |
+| `gsf{char}` | Find surround (right) |
+| `gsF{char}` | Find surround (left) |
+| `gsh{char}` | Highlight surround |
 
 **Examples**:
-- `ysiw"` - Surround word with quotes
-- `ds"` - Delete surrounding quotes
-- `cs"'` - Change double quotes to single
+- `gsaiw"` - Surround word with quotes
+- `gsd"` - Delete surrounding quotes
+- `gsr"'` - Replace double quotes with single
+
+### Comment
+
+| Key | Action |
+|-----|--------|
+| `<leader>/` | Toggle comment |
+
+### Textobjects (mini.ai)
+
+Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
+
+| Textobject | Description |
+|------------|-------------|
+| `q` | Quotes (any quote character) |
+| `b` | Brackets (any bracket type) |
+| `f` | Function call |
+| `a` | Argument/parameter |
+| `t` | HTML/XML tag |
+| `o` | Block (code block) |
+| `i` | Indentation scope |
+
+**Modifiers** (prefix before textobject):
+
+| Modifier | Description |
+|----------|-------------|
+| `n` | Next occurrence |
+| `l` | Last (previous) occurrence |
+
+**Examples**:
+- `daf` - Delete around function call
+- `ciq` - Change inside quotes (any type)
+- `vib` - Select inside brackets
+- `cin)` - Change inside next parentheses
+- `dal"` - Delete around last double quote
+- `yia` - Yank inside argument
+- `vii` - Select inside indentation
 
 ---
 

@@ -81,12 +81,12 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
 	callback = function(event)
-		local map = function(keys, func, desc)
-			vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+		local map = function(keys, func, desc, mode)
+			vim.keymap.set(mode or "n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 		end
 
 		map("K", vim.lsp.buf.hover, "Hover Documentation")
-		map("gs", vim.lsp.buf.signature_help, "Signature Documentation")
+		map("<C-k>", vim.lsp.buf.signature_help, "Signature Help", { "n", "i" })
 		map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 		map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
 		map("<leader>la", vim.lsp.codelens.run, "Run Code Lens Action")

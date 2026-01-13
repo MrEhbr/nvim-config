@@ -26,13 +26,13 @@ return {
 
 			require("mini.surround").setup({
 				mappings = {
-					add = "ys",
-					delete = "ds",
-					replace = "cs",
-					find = "",
-					find_left = "",
-					highlight = "",
-					update_n_lines = "",
+					add = "gsa",
+					delete = "gsd",
+					replace = "gsr",
+					find = "gsf",
+					find_left = "gsF",
+					highlight = "gsh",
+					update_n_lines = "gsn",
 				},
 			})
 
