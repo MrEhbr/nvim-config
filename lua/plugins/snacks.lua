@@ -49,7 +49,15 @@ return {
 		scroll = { enabled = true },
 		scope = { enabled = true },
 		dim = { enabled = true },
-		statuscolumn = { enabled = false },
+		statuscolumn = {
+			enabled = true,
+			left = { "mark", "sign" },
+			right = { "fold", "git" },
+			folds = {
+				open = true,
+				git_hl = false,
+			},
+		},
 		words = { enabled = true },
 		explorer = {
 			enabled = true,

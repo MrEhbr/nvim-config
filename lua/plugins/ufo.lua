@@ -1,22 +1,8 @@
 return {
 	"kevinhwang91/nvim-ufo",
-	event = "VimEnter",
+	event = "BufReadPost",
 	dependencies = {
 		"kevinhwang91/promise-async",
-		{
-			"luukvbaal/statuscol.nvim",
-			config = function()
-				local builtin = require("statuscol.builtin")
-				require("statuscol").setup({
-					relculright = true,
-					segments = {
-						{ text = { "%s" }, click = "v:lua.ScSa" },
-						{ text = { builtin.lnumfunc }, click = "v:lua.ScLa" },
-						{ text = { " ", builtin.foldfunc, " " }, click = "v:lua.ScFa" },
-					},
-				})
-			end,
-		},
 	},
 	config = function()
 		local handler = function(virtText, lnum, endLnum, width, truncate)
@@ -60,6 +46,7 @@ return {
 		local nmap = function(keys, func, desc)
 			vim.keymap.set("n", keys, func, {
 				desc = desc,
+				silent = true,
 			})
 		end
 		nmap("zR", function()
@@ -71,6 +58,9 @@ return {
 		nmap("zM", function()
 			require("ufo").closeAllFolds()
 		end, "Close all folds")
+		nmap("zm", function()
+			require("ufo").closeFoldsWith()
+		end, "Close folds by level")
 		nmap("zK", function()
 			local winid = require("ufo").peekFoldedLinesUnderCursor()
 			if not winid then
