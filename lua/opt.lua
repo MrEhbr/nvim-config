@@ -1,5 +1,5 @@
-local opt = vim.opt
 local g = vim.g
+local o = vim.o
 
 g.mapleader = " "
 g.maplocalleader = " "
@@ -7,62 +7,66 @@ g.loaded_ruby_provider = 0
 g.omni_sql_no_default_maps = 1
 g.autoformat = true
 
-opt.hlsearch = true
-opt.clipboard = "unnamedplus"
+o.breakindent = true
+o.hlsearch = true
+o.clipboard = "unnamedplus"
 
-opt.relativenumber = true
-opt.conceallevel = 2
+o.relativenumber = true
+o.conceallevel = 2
 vim.filetype.add({ extension = { templ = "templ", bru = "bruno", tmpl = "gotmpl" } })
 
-opt.showmode = false
+o.showmode = false
 
-opt.expandtab = true
-opt.shiftwidth = 2
-opt.tabstop = 2
-opt.softtabstop = 2
-opt.scrolloff = 10
+o.expandtab = true
+o.shiftwidth = 2
+o.tabstop = 2
+o.softtabstop = 2
+o.scrolloff = 10
 
-opt.ignorecase = true
-opt.smartcase = true
+o.ignorecase = true
+o.smartcase = true
 
-opt.number = true
-opt.numberwidth = 2
+o.number = true
+o.numberwidth = 2
 
-opt.timeoutlen = 400
-opt.updatetime = 250
+o.timeoutlen = 300
+o.updatetime = 250
 
-opt.whichwrap:append("<>[]hl")
+vim.opt.whichwrap:append("<>[]hl")
 for _, provider in ipairs({ "node", "perl", "python3", "ruby" }) do
-	vim.g["loaded_" .. provider .. "_provider"] = 0
+	g["loaded_" .. provider .. "_provider"] = 0
 end
 
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
 
 -- Folding
-vim.o.fillchars = [[eob: ,fold: ,foldopen: ,foldsep: ,foldclose:]]
-vim.o.foldcolumn = "1"
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
+vim.opt.fillchars = { eob = " ", fold = " ", foldopen = "", foldsep = " ", foldinner = " ", foldclose = "" }
+o.foldcolumn = "1"
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
 
-vim.o.winborder = "rounded"
+o.winborder = "rounded"
 
-opt.undofile = true
-opt.undolevels = 10000
+o.undofile = true
+o.undolevels = 10000
 
-opt.splitright = true
-opt.splitbelow = true
-opt.splitkeep = "screen"
+o.splitright = true
+o.splitbelow = true
+o.splitkeep = "screen"
 
-opt.signcolumn = "yes"
-opt.inccommand = "split"
+o.signcolumn = "yes"
+o.inccommand = "split"
 
-opt.cursorline = true
-opt.virtualedit = "block"
+o.cursorline = true
+o.virtualedit = "block"
 
-opt.smoothscroll = true
-opt.sidescrolloff = 8
-opt.jumpoptions = "view"
+o.smoothscroll = true
+o.sidescrolloff = 8
+o.jumpoptions = "view"
 
-opt.confirm = true
+o.confirm = true
+
+o.list = true
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
