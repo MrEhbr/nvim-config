@@ -146,6 +146,15 @@ return {
 					exclude = exclude,
 					layout = { layout = layout },
 				},
+				git_status = {
+					win = {
+						input = {
+							keys = {
+								["<Tab>"] = { "select_and_next", mode = { "n", "i" } },
+							},
+						},
+					},
+				},
 
 				lsp_implementations = {
 					layout = { layout = layout },
