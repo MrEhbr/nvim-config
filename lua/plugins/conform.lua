@@ -40,6 +40,7 @@ return {
 			sql = { "sqruff" },
 			php = { "pint" },
 			go = { "golines", "goimports", "gofumpt" },
+			just = {}, -- disabled: just --fmt adds [private] to _ vars, breaks treesitter
 
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			typescript = { "prettierd", "prettier", stop_after_first = true },
@@ -83,6 +84,10 @@ return {
 				stdin = true,
 			},
 			injected = {
+				condition = function(_, ctx)
+					-- skip just files: injected triggers just --fmt which adds [private] breaking treesitter
+					return ctx.filetype ~= "just"
+				end,
 				options = {
 					ignore_errors = false,
 					debug = true,
