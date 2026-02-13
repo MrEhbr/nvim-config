@@ -127,4 +127,10 @@ return {
 			end, { desc = "Swap prev parameter" })
 		end,
 	},
+	{
+		"ravsii/tree-sitter-d2",
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		version = "*",
+		build = "make nvim-install",
+	},
 }
