@@ -257,7 +257,7 @@ return {
 					position = "left",
 					enabled = true,
 				},
-				sections = { "watches", "scopes", "breakpoints", "repl", "disassembly" },
+				sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "repl" },
 				default_section = "scopes",
 			},
 			windows = {
