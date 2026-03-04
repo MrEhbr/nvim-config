@@ -1,6 +1,6 @@
 return {
 	"stevearc/conform.nvim",
-	event = { "BufWritePre" },
+	event = { "BufWritePre", "BufWritePost" },
 	cmd = { "ConformInfo" },
 	keys = {
 		{
@@ -13,21 +13,31 @@ return {
 		},
 	},
 	opts = {
-		notify_on_error = false,
+		notify_on_error = true,
+		default_format_opts = {
+			lsp_format = "fallback",
+		},
 		format_on_save = function(bufnr)
 			if not vim.g.autoformat then
 				return false
 			end
-			local disable_filetypes = { c = true, cpp = true }
-			local timeout = 5000
-			local timeouts = { php = 3000 }
-			if timeouts[vim.bo[bufnr].filetype] then
-				timeout = timeouts[vim.bo[bufnr].filetype]
+			local skip = { php = true }
+			if skip[vim.bo[bufnr].filetype] then
+				return false
 			end
 			return {
-				timeout_ms = timeout,
-				lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+				timeout_ms = 5000,
 			}
+		end,
+		format_after_save = function(bufnr)
+			if not vim.g.autoformat then
+				return false
+			end
+			local slow_filetypes = { php = true }
+			if not slow_filetypes[vim.bo[bufnr].filetype] then
+				return false
+			end
+			return {}
 		end,
 		formatters_by_ft = {
 			sh = { "shfmt" },
@@ -48,6 +58,9 @@ return {
 			["*"] = { "injected" },
 		},
 		formatters = {
+			sqruff = {
+				exit_codes = { 0, 1 },
+			},
 			golines = {
 				prepend_args = {
 					"-m",
@@ -65,19 +78,6 @@ return {
 					"--quiet",
 				},
 			},
-			pg_format = {
-				prepend_args = {
-					"--keyword-case",
-					"2",
-					"--type-case",
-					"2",
-					"--spaces",
-					"4",
-					"--no-space-function",
-					"--nogrouping",
-					"--keep-newline",
-				},
-			},
 			templ = {
 				command = "templ",
 				args = { "fmt", "-stdin" },
@@ -90,7 +90,7 @@ return {
 				end,
 				options = {
 					ignore_errors = false,
-					debug = true,
+					debug = false,
 					lang_to_formatters = {
 						sql = { "sqruff" },
 					},
