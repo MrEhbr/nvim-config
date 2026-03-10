@@ -1,5 +1,3 @@
-local lsp_utils = require("config.lsp")
-
 return {
 	cmd = { "lua-language-server" },
 	filetypes = { "lua" },
@@ -32,5 +30,4 @@ return {
 			},
 		},
 	},
-	capabilities = lsp_utils.capabilities,
 }

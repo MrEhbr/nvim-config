@@ -3,10 +3,7 @@ return {
 	version = "*",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
-		{
-			"famiu/bufdelete.nvim",
-			event = "VeryLazy",
-		},
+		"famiu/bufdelete.nvim",
 	},
 	config = function()
 		local bufferline = require("bufferline")

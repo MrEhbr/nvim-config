@@ -32,36 +32,48 @@ function M.actions.copy_file_path(picker, item, action)
 	require("config.utils").copy_file_path(item.file)
 end
 
-function M.actions.search_in_directory(picker, item, action)
+local function grep_in_directory(picker, item, opts)
 	if not item then
 		return
 	end
 	local dir = vim.fn.fnamemodify(item.file, ":p:h")
+	local args = {
+		"-g",
+		"!.git",
+		"-g",
+		"!node_modules",
+		"-g",
+		"!dist",
+		"-g",
+		"!build",
+		"-g",
+		"!coverage",
+		"-g",
+		"!.DS_Store",
+		"-g",
+		"!.dart_tool",
+	}
+	if opts and opts.case_sensitive then
+		table.insert(args, "--case-sensitive")
+	end
 	Snacks.picker.grep({
 		cwd = dir,
 		cmd = "rg",
-		args = {
-			"-g",
-			"!.git",
-			"-g",
-			"!node_modules",
-			"-g",
-			"!dist",
-			"-g",
-			"!build",
-			"-g",
-			"!coverage",
-			"-g",
-			"!.DS_Store",
-			"-g",
-			"!.dart_tool",
-		},
+		args = args,
 		show_empty = true,
 		hidden = true,
 		ignored = true,
 		follow = false,
 		supports_live = true,
 	})
+end
+
+function M.actions.search_in_directory(picker, item, action)
+	grep_in_directory(picker, item)
+end
+
+function M.actions.search_in_directory_case_sensitive(picker, item, action)
+	grep_in_directory(picker, item, { case_sensitive = true })
 end
 
 function M.actions.diff(picker, item, action)

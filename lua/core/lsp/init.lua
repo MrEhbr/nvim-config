@@ -20,36 +20,7 @@ vim.lsp.enable({
 vim.lsp.inline_completion.enable()
 
 vim.lsp.config("*", {
-	capabilities = {
-		textDocument = {
-			semanticTokens = {
-				multilineTokenSupport = false,
-			},
-			foldingRange = {
-				dynamicRegistration = false,
-				lineFoldingOnly = true,
-			},
-			completion = {
-				completionItem = {
-					documentationFormat = { "markdown", "plaintext" },
-					snippetSupport = true,
-					preselectSupport = true,
-					insertReplaceSupport = true,
-					labelDetailsSupport = true,
-					deprecatedSupport = true,
-					commitCharactersSupport = true,
-					tagSupport = { valueSet = { 1 } },
-					resolveSupport = {
-						properties = {
-							"documentation",
-							"detail",
-							"additionalTextEdits",
-						},
-					},
-				},
-			},
-		},
-	},
+	capabilities = require("config.lsp").capabilities,
 	root_markers = { ".git" },
 })
 
@@ -86,11 +57,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		map("K", vim.lsp.buf.hover, "Hover Documentation")
-		map("<C-k>", vim.lsp.buf.signature_help, "Signature Help", { "n", "i" })
-		map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+		map("<C-S-k>", vim.lsp.buf.signature_help, "Signature Help", { "n", "i" })
 		map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
 		map("<leader>la", vim.lsp.codelens.run, "Run Code Lens Action")
-		map("<leader>fm", vim.lsp.buf.format, "Format")
 		map("<leader>lr", vim.lsp.buf.rename, "Rename Symbol")
 		map("<leader>lh", function()
 			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())

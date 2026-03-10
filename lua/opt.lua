@@ -3,7 +3,6 @@ local o = vim.o
 
 g.mapleader = " "
 g.maplocalleader = " "
-g.loaded_ruby_provider = 0
 g.omni_sql_no_default_maps = 1
 g.autoformat = true
 
@@ -37,7 +36,7 @@ for _, provider in ipairs({ "node", "perl", "python3", "ruby" }) do
 	g["loaded_" .. provider .. "_provider"] = 0
 end
 
-local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
+local is_windows = vim.uv.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
 
 -- Folding

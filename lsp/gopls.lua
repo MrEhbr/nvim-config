@@ -1,5 +1,3 @@
-local lsp_utils = require("config.lsp")
-
 return {
 	cmd = { "gopls" },
 	filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
@@ -50,5 +48,4 @@ return {
 			directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
 		},
 	},
-	capabilities = lsp_utils.capabilities,
 }

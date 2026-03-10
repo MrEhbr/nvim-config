@@ -4,7 +4,7 @@ return {
 		config = function()
 			require("mini.basics").setup({
 				options = {
-					basic = true,
+					basic = false,
 					extra_ui = false,
 					win_borders = "bold",
 				},

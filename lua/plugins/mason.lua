@@ -39,8 +39,7 @@ return {
 				"nixpkgs-fmt",
 				"black",
 				"stylua",
-				"cbfmt",
-				"markdownlint",
+				"rumdl",
 
 				-- Debuggers
 				"js-debug-adapter",

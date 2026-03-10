@@ -8,6 +8,15 @@ M.capabilities = vim.tbl_deep_extend(
 	vim.lsp.protocol.make_client_capabilities(),
 	blink.get_lsp_capabilities(),
 	{
+		textDocument = {
+			semanticTokens = {
+				multilineTokenSupport = false,
+			},
+			foldingRange = {
+				dynamicRegistration = false,
+				lineFoldingOnly = true,
+			},
+		},
 		fileOperations = {
 			didRename = true,
 			willRename = true,

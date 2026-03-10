@@ -23,7 +23,6 @@ return {
 	},
 	config = function()
 		require("lualine").setup({
-			active = true,
 			options = {
 				theme = "auto",
 				component_separators = "|",

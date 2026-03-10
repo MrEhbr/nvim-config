@@ -44,7 +44,7 @@ return {
 			lua = { "stylua" },
 			python = { "black" },
 			templ = { "templ" },
-			markdown = { "markdownlint", "cbfmt" },
+			markdown = { "rumdl" },
 			nix = { "nixpkgs_fmt" },
 			proto = { "buf" },
 			sql = { "sqruff" },
