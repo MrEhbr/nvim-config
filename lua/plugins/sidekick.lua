@@ -11,6 +11,13 @@ return {
 			},
 			tools = {
 				claude = { cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") } },
+				codex = {
+					cmd = { "codex" },
+					is_proc = "\\<codex\\>",
+					url = "https://github.com/openai/codex",
+					resume = { "resume" },
+					continue = { "resume", "--last" },
+				},
 			},
 			win = {
 				split = {
@@ -23,7 +30,9 @@ return {
 			context = {
 				dir = function(ctx)
 					local Loc = require("sidekick.cli.context.location")
-					if not Loc.is_file(ctx.buf) then return end
+					if not Loc.is_file(ctx.buf) then
+						return
+					end
 					local name = vim.api.nvim_buf_get_name(ctx.buf)
 					local rel = vim.fs.relpath(ctx.cwd, name)
 					local dir = vim.fs.dirname(rel or name)

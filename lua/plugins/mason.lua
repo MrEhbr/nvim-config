@@ -31,7 +31,6 @@ return {
 				"shfmt",
 				"gofumpt",
 				"goimports",
-				"goimports-reviser",
 				"golines",
 				"gomodifytags",
 				-- "pint",

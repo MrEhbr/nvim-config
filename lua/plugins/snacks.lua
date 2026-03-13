@@ -402,6 +402,35 @@ return {
 		},
 
 		{
+			"<leader>fr",
+			function()
+				Snacks.picker.resume()
+			end,
+			desc = "Resume Last Picker",
+		},
+		{
+			"<leader>fw",
+			function()
+				Snacks.picker.grep_word()
+			end,
+			desc = "Grep Word",
+			mode = { "n", "x" },
+		},
+		{
+			"<leader>sd",
+			function()
+				Snacks.picker.diagnostics_buffer()
+			end,
+			desc = "Buffer Diagnostics",
+		},
+		{
+			"<leader>sD",
+			function()
+				Snacks.picker.diagnostics()
+			end,
+			desc = "Workspace Diagnostics",
+		},
+		{
 			"<leader>.",
 			function()
 				Snacks.scratch()

@@ -12,9 +12,13 @@
 |-----|--------|
 | `<leader>ff` | Find files |
 | `<leader>fg` | Grep search |
+| `<leader>fw` | Grep word under cursor (normal + visual) |
 | `<leader>fo` | Recent files |
+| `<leader>fr` | Resume last picker |
 | `<C-n>` | Toggle file explorer |
 | `<leader>fc` | Search in current buffer |
+| `<leader>sd` | Buffer diagnostics |
+| `<leader>sD` | Workspace diagnostics |
 
 ---
 
@@ -262,6 +266,16 @@ Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
 | `zr` | Open folds (except kinds) |
 | `zM` | Close all folds |
 | `zK` | Peek fold |
+
+---
+
+## Treesitter Context
+
+| Key | Action |
+|-----|--------|
+| `[C` | Jump to sticky context (enclosing function/class) |
+
+Sticky headers show up to 3 lines of the enclosing function/class/block at the top of the window.
 
 ---
 
