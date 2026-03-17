@@ -21,6 +21,8 @@ local function get_arguments()
 	end)
 end
 
+local last_resolved_config = nil
+
 local function go_configurations(dap)
 	dap.configurations.go = {
 		{
@@ -88,8 +90,8 @@ return {
 				config = function()
 					require("dap-rust").setup({
 						codelldb = {
-							path = vim.fn.expand("$MASON/bin/codelldb"),
-							lib_path = vim.fn.expand("$MASON/share/codelldb/lldb/lib/liblldb.dylib"),
+							path = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+							lib_path = vim.fn.stdpath("data") .. "/mason/share/codelldb/lldb/lib/liblldb.dylib",
 						},
 					})
 				end,
@@ -173,7 +175,11 @@ return {
 			{
 				"<leader>dl",
 				function()
-					require("dap").run_last()
+					if last_resolved_config then
+						require("dap").run(last_resolved_config)
+					else
+						require("dap").continue()
+					end
 				end,
 				desc = "[d]ebug [l]ast",
 			},
@@ -220,24 +226,17 @@ return {
 				desc = "[d]ebug [h]over",
 			},
 		},
-		config = function(_, _)
+		config = function()
 			local dap = require("dap")
 			go_configurations(dap)
 			php_configurations(dap)
-			local configurations = require("dap.ext.vscode").getconfigs(vim.fn.getcwd() .. "/.run/launch.json")
 
-			for _, config in ipairs(configurations) do
-				assert(config.type, "Configuration in launch.json must have a 'type' key")
-				assert(config.name, "Configuration in launch.json must have a 'name' key")
+			dap.providers.configs["launch.json"] = function()
+				return require("dap.ext.vscode").getconfigs(vim.fn.getcwd() .. "/.run/launch.json") or {}
+			end
 
-				local dap_configurations = dap.configurations[config.type] or {}
-				for i, dap_config in pairs(dap_configurations) do
-					if dap_config.name == config.name then
-						table.remove(dap_configurations, i)
-					end
-				end
-				table.insert(dap_configurations, config)
-				dap.configurations[config.type] = dap_configurations
+			dap.listeners.after.event_initialized["capture_last_config"] = function(session)
+				last_resolved_config = vim.deepcopy(session.config)
 			end
 		end,
 	},
@@ -270,13 +269,13 @@ return {
 			local dap = require("dap")
 			local dv = require("dap-view")
 			dv.setup(opts)
-			dap.listeners.after.event_initialized["dapui_config"] = function()
+			dap.listeners.after.event_initialized["dap_view"] = function()
 				dv.open()
 			end
-			dap.listeners.before.event_terminated["dapui_config"] = function()
+			dap.listeners.before.event_terminated["dap_view"] = function()
 				dv.close()
 			end
-			dap.listeners.before.event_exited["dapui_config"] = function()
+			dap.listeners.before.event_exited["dap_view"] = function()
 				dv.close()
 			end
 		end,
