@@ -67,5 +67,5 @@ o.jumpoptions = "view"
 
 o.confirm = true
 
-o.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+o.list = false
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "↷", precedes = "↶" }
