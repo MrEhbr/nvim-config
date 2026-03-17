@@ -22,6 +22,112 @@
 
 ---
 
+## Inside Snacks Pickers
+
+Once a picker is open, these keybindings are available. Most work in both insert (input) and normal (list) modes.
+
+### Navigation
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<C-j>` / `<C-n>` | i, n | Move down in list |
+| `<C-k>` / `<C-p>` | i, n | Move up in list |
+| `<C-d>` / `<C-u>` | i, n | Scroll list down/up (half page) |
+| `gg` / `G` | n | Jump to top/bottom of list |
+| `zz` / `zt` / `zb` | n | Scroll list center/top/bottom |
+| `<C-f>` / `<C-b>` | i, n | Scroll preview down/up |
+
+### Opening Results
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<CR>` | i, n | Confirm (open in current window) |
+| `<S-CR>` | n | Pick window, then jump |
+| `<C-s>` | i, n | Open in horizontal split |
+| `<C-v>` | i, n | Open in vertical split |
+| `<C-t>` | i, n | Open in new tab |
+
+### Selection & Quickfix
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<Tab>` / `<S-Tab>` | n | Select item and move next/prev |
+| `<C-a>` | i, n | Select all items |
+| `<C-q>` | i, n | Send selected (or all) to quickfix list |
+
+### Toggling Features
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<A-p>` | i, n | Toggle preview panel |
+| `<A-u>` | n | Toggle maximized picker |
+| `<A-h>` | n | Toggle hidden files |
+| `<A-n>` | n | Toggle ignored files |
+| `<A-o>` | n | Toggle follow symlinks |
+| `<C-g>` | i, n | Toggle live grep (grep picker) |
+| `<A-x>` | n | Inspect item (raw data) |
+| `?` | n | Toggle help (shows all keybindings) |
+
+### Focus & Layout
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `/` | n | Toggle focus between input and list |
+| `i` | n | Focus input (enter insert mode) |
+| `<A-w>` | i, n | Cycle focus: input → list → preview |
+| `<C-w>H/J/K/L` | n | Move picker layout left/bottom/top/right |
+
+### Insert Mode Registers
+
+| Key | Action |
+|-----|--------|
+| `<C-r><C-w>` | Insert word under cursor |
+| `<C-r><C-a>` | Insert WORD under cursor |
+| `<C-r><C-l>` | Insert current line |
+| `<C-r><C-f>` | Insert filename |
+| `<C-r><C-p>` | Insert full file path |
+| `<C-r>%` | Insert current filename |
+| `<C-r>#` | Insert alternate filename |
+
+### Closing
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<Esc>` | n | Cancel and close picker |
+| `q` | n | Cancel and close picker |
+
+### Source-Specific Keys
+
+**Undo History** (`<leader>uh`):
+
+| Key | Action |
+|-----|--------|
+| `<C-y>` | Yank added changes from undo entry |
+| `<C-d>` | Yank deleted changes from undo entry |
+
+**File Explorer** (`<C-n>`):
+
+| Key | Action |
+|-----|--------|
+| `y` | Copy file path |
+| `f` | Grep in file's directory |
+| `F` | Grep in file's directory (case-sensitive) |
+| `D` | Diff two selected files |
+| `v` / `s` | Open in vsplit / split |
+| `{` / `}` | Jump to next/prev folder |
+| `za` / `Z` | Close folder / close all folders |
+
+### Tips
+
+1. **`?` is your friend** — press `?` in normal mode inside any picker to see all available keybindings for that picker
+2. **Multi-select workflow** — use `<Tab>` to select multiple items, then `<C-q>` to send them all to quickfix
+3. **Live grep toggle** — in the grep picker, `<C-g>` switches between live grep and filtering existing results
+4. **Hidden/ignored files** — toggle `<A-h>` and `<A-n>` to include files normally excluded from search
+5. **Preview scrolling** — `<C-f>`/`<C-b>` scroll the preview without leaving the input field
+6. **Quick inspect** — `<A-x>` in list mode opens an inspector showing the raw item data (useful for debugging)
+
+---
+
 ## Buffer Management
 
 | Key | Action |
@@ -153,6 +259,7 @@
 | `gsh{char}` | Highlight surround |
 
 **Examples**:
+
 - `gsaiw"` - Surround word with quotes
 - `gsd"` - Delete surrounding quotes
 - `gsr"'` - Replace double quotes with single
@@ -185,6 +292,7 @@ Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
 | `l` | Last (previous) occurrence |
 
 **Examples**:
+
 - `daf` - Delete around function call
 - `ciq` - Change inside quotes (any type)
 - `vib` - Select inside brackets
@@ -317,22 +425,26 @@ Flash.nvim provides lightning-fast navigation with labeled jump targets.
 ### How It Works
 
 **`s` - Flash Jump**
+
 1. Press `s`
 2. Type character(s) you want to jump to
 3. Labels appear on all matches
 4. Press the label key to jump instantly
 
 **`S` - Flash Treesitter**
+
 1. Press `S`
 2. Labels appear on treesitter nodes (functions, blocks, etc.)
 3. Press label to select/jump to that node
 4. Great for selecting entire functions or code blocks
 
 **`r` - Remote Flash (operator-pending)**
+
 - Use with operators like `d`, `y`, `c`
 - Example: `yr{label}` - yank text at remote location without moving cursor
 
 **`R` - Treesitter Search (operator-pending/visual)**
+
 - Combines search with treesitter node selection
 - Example: `dR` then type pattern to delete matching treesitter node
 
@@ -417,7 +529,7 @@ Formatters configured for: Go, Lua, Python, Shell, JavaScript/TypeScript, Markdo
 | **UI** | kanagawa, lualine, bufferline, snacks.nvim |
 | **Completion** | blink.cmp, friendly-snippets |
 | **LSP** | nvim-lspconfig (built-in), lazydev |
-| **Syntax** | nvim-treesitter, rainbow-delimiters |
+| **Syntax** | nvim-treesitter, indent-blankline |
 | **Formatting** | conform.nvim |
 | **Git** | gitsigns, diffview |
 | **Testing** | neotest (go, rust, plenary adapters) |

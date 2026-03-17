@@ -175,6 +175,19 @@ return {
 						["<C-q>"] = { "qflist", mode = { "i", "n" } },
 					},
 				},
+				list = {
+					keys = {
+						-- Remap defaults that conflict with Aerospace / Tmux
+						["<a-d>"] = false,
+						["<a-f>"] = false,
+						["<a-m>"] = false,
+						["<a-i>"] = false,
+						["<a-x>"] = "inspect",
+						["<a-o>"] = "toggle_follow",
+						["<a-u>"] = "toggle_maximize",
+						["<a-n>"] = "toggle_ignored",
+					},
+				},
 			},
 		},
 		dashboard = {
