@@ -171,7 +171,7 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>ld` | Document symbols |
 | `<leader>lw` | Workspace symbols |
 
-**Supported Languages**: Go, Rust, Lua, PHP, TypeScript/JS, JSON, YAML, Markdown, Nix, Dart, Java, Tailwind CSS, Templ, Biome
+**Supported Languages**: Go, Rust, Lua, PHP, TypeScript/JS, JSON, YAML, Markdown, Nix, Dart, Java, Tailwind CSS, Templ
 
 ---
 

@@ -7,7 +7,6 @@ return {
 				-- LSP
 				"marksman",
 				"intelephense",
-				"biome",
 				"pyright",
 				"nil", -- nix
 				"templ",
@@ -19,13 +18,13 @@ return {
 				"lua-language-server",
 				"rust-analyzer",
 				"jdtls",
+			"typescript-language-server",
 				-- Diagnostic
 				"harper-ls",
 				-- "golangci-lint",
 				"copilot-language-server",
 
 				-- Formatters
-				"biome",
 				"prettierd",
 				"rustywind",
 				"shfmt",

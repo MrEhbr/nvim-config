@@ -12,9 +12,9 @@ vim.lsp.enable({
 	"nil_ls",
 	"templ",
 	"dartls",
-	"biome",
 	"copilot",
 	"jdtls",
+	"ts_ls",
 })
 
 vim.lsp.inline_completion.enable()

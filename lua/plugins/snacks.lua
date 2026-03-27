@@ -348,6 +348,18 @@ return {
 			desc = "Quickfix List",
 		},
 		{
+			"<leader>sj",
+			function()
+				local cwd = vim.fn.getcwd()
+				Snacks.picker.jumps({
+					transform = function(item)
+						return item.file and vim.startswith(item.file, cwd)
+					end,
+				})
+			end,
+			desc = "Jumplist",
+		},
+		{
 			"<leader>uh",
 			function()
 				Snacks.picker.undo({
