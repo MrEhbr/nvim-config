@@ -11,6 +11,10 @@ return {
 			},
 			tools = {
 				claude = { cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") } },
+				claude_work = {
+					cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/.mcp.json") },
+					env = { CLAUDE_CONFIG_DIR = vim.fn.expand("$HOME/.claude-work") },
+				},
 				codex = {
 					cmd = { "codex" },
 					is_proc = "\\<codex\\>",
