@@ -3,8 +3,20 @@ return {
 	{ "tpope/vim-sleuth", lazy = false },
 	{ "tpope/vim-obsession", lazy = false },
 	{
-		"direnv/direnv.vim",
+		"NotAShelf/direnv.nvim",
 		lazy = false,
+		opts = {
+			autoload_direnv = true,
+			keybindings = {
+				allow = false,
+				deny = false,
+				reload = false,
+				edit = false,
+			},
+			statusline = {
+				enabled = true,
+			},
+		},
 	},
 	{ "folke/which-key.nvim", lazy = false, opts = {} },
 	{

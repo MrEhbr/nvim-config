@@ -54,6 +54,9 @@ return {
 					},
 				},
 				lualine_x = {
+					function()
+						return require("direnv").statusline()
+					end,
 					{
 						"diagnostics",
 						color = { gui = "bold" },
