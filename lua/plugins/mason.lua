@@ -24,6 +24,11 @@ return {
 				-- "golangci-lint",
 				"copilot-language-server",
 
+				-- Linters (nvim-lint)
+				"shellcheck",
+				"hadolint",
+				"actionlint",
+
 				-- Formatters
 				"prettierd",
 				"rustywind",

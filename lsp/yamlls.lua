@@ -8,10 +8,12 @@ return {
 			validate = true,
 			completion = true,
 			editor = { formatOnType = true },
-		},
-		schemaStore = {
-			enable = false,
-			url = "",
+			schemaStore = {
+				-- disable built-in schemaStore; SchemaStore.nvim provides schemas
+				enable = false,
+				url = "",
+			},
+			schemas = require("schemastore").yaml.schemas(),
 		},
 		redhat = {
 			telemetry = {

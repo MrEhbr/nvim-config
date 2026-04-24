@@ -1,7 +1,6 @@
 return {
 	{ "christoomey/vim-tmux-navigator", lazy = false },
 	{ "tpope/vim-sleuth", lazy = false },
-	{ "tpope/vim-obsession", lazy = false },
 	{
 		"NotAShelf/direnv.nvim",
 		lazy = false,
@@ -17,6 +16,18 @@ return {
 				enabled = true,
 			},
 		},
+		config = function(_, opts)
+			require("direnv").setup(opts)
+			local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "DirenvLoaded",
+				callback = function()
+					if not vim.env.PATH:find(mason_bin, 1, true) then
+						vim.env.PATH = mason_bin .. ":" .. vim.env.PATH
+					end
+				end,
+			})
+		end,
 	},
 	{ "folke/which-key.nvim", lazy = false, opts = {} },
 	{
