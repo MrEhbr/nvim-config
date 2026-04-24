@@ -263,20 +263,28 @@ return {
 			end,
 			desc = "File Explorer",
 		},
-		{
-			"<leader>ff",
-			function()
-				Snacks.picker.files({ filter = { cwd = true } })
-			end,
-			desc = "Find Files",
-		},
-		{
-			"<leader>fg",
-			function()
-				Snacks.picker.grep({ filter = { cwd = true } })
-			end,
-			desc = "Find Grep",
-		},
+		-- {
+		-- 	"<leader>ff",
+		-- 	function()
+		-- 		Snacks.picker.files({ filter = { cwd = true } })
+		-- 	end,
+		-- 	desc = "Find Files",
+		-- },
+		-- {
+		-- 	"<leader>fg",
+		-- 	function()
+		-- 		Snacks.picker.grep({ filter = { cwd = true } })
+		-- 	end,
+		-- 	desc = "Find Grep",
+		-- },
+		-- {
+		-- 	"<leader>fw",
+		-- 	function()
+		-- 		Snacks.picker.grep_word()
+		-- 	end,
+		-- 	desc = "Grep Word",
+		-- 	mode = { "n", "x" },
+		-- },
 		{
 			"<leader>fo",
 			function()
@@ -432,14 +440,6 @@ return {
 				Snacks.picker.resume()
 			end,
 			desc = "Resume Last Picker",
-		},
-		{
-			"<leader>fw",
-			function()
-				Snacks.picker.grep_word()
-			end,
-			desc = "Grep Word",
-			mode = { "n", "x" },
 		},
 		{
 			"<leader>sd",
