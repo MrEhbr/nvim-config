@@ -18,7 +18,7 @@ return {
 				"lua-language-server",
 				"rust-analyzer",
 				"jdtls",
-			"typescript-language-server",
+				"typescript-language-server",
 				-- Diagnostic
 				"harper-ls",
 				-- "golangci-lint",
