@@ -16,6 +16,10 @@ return {
 				anchor = "center",
 				show_scrollbar = false,
 			},
+			debug = {
+				enabled = false,
+				show_scores = false,
+			},
 		},
 		keys = {
 			{
