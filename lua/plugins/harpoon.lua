@@ -6,16 +6,48 @@ return {
 		local harpoon = require("harpoon")
 		harpoon:setup()
 
+		local harpoon_ext = require("harpoon.extensions")
+		local function redraw_tabline()
+			vim.schedule(function()
+				vim.cmd("redrawtabline")
+			end)
+		end
+		harpoon_ext.extensions:add_listener({
+			ADD = redraw_tabline,
+			REMOVE = redraw_tabline,
+			REORDER = redraw_tabline,
+			LIST_CHANGE = redraw_tabline,
+		})
+
 		vim.keymap.set("n", "<leader>ma", function()
-			harpoon:list():add()
+			local list = harpoon:list()
+			local current = list.config.create_list_item(list.config)
+			if list:get_by_value(current.value) then
+				vim.notify("Harpoon: already marked: " .. current.value, vim.log.levels.WARN)
+				return
+			end
+			list:add()
+			vim.notify("Harpoon: added " .. current.value, vim.log.levels.INFO)
 		end, { desc = "[a]dd Harpoon [m]ark" })
 
 		vim.keymap.set("n", "<leader>mc", function()
+			local count = harpoon:list():length()
+			if count == 0 then
+				vim.notify("Harpoon: no marks to clear", vim.log.levels.WARN)
+				return
+			end
 			harpoon:list():clear()
+			vim.notify("Harpoon: cleared " .. count .. " mark(s)", vim.log.levels.WARN)
 		end, { desc = "[c]lear All Harpoon [m]arks" })
 
 		vim.keymap.set("n", "<leader>md", function()
-			harpoon:list():remove()
+			local list = harpoon:list()
+			local current = list.config.create_list_item(list.config)
+			if not list:get_by_value(current.value) then
+				return
+			end
+			list:remove()
+			vim.notify("Harpoon: removed " .. current.value, vim.log.levels.INFO)
 		end, { desc = "[d]elete Harpoon [m]ark" })
 
 		vim.keymap.set("n", "<leader>ml", function()
@@ -23,13 +55,18 @@ return {
 				source = "harpoon",
 				finder = function()
 					local output = {}
-					for idx, item in ipairs(require("harpoon"):list().items) do
-						if item and item.value:match("%S") then
+					local list = require("harpoon"):list()
+					local row = 0
+					for i = 1, list:length() do
+						local it = list.items[i]
+						if it and it.value:match("%S") then
+							row = row + 1
 							table.insert(output, {
-								idx = idx,
-								text = item.value,
-								file = item.value,
-								pos = { item.context.row, item.context.col },
+								harpoon_idx = i,
+								picker_row = row,
+								text = it.value,
+								file = it.value,
+								pos = { it.context.row, it.context.col },
 							})
 						end
 					end
@@ -62,20 +99,32 @@ return {
 						if not item then
 							return
 						end
-						require("harpoon"):list():remove_at(item.idx)
+						require("harpoon"):list():remove_at(item.harpoon_idx)
 						picker:find({ refresh = true })
 					end,
 					harpoon_move_up = function(picker, item)
-						if not item or item.idx <= 1 then
+						if not item or item.picker_row <= 1 then
 							return
 						end
-						local items = require("harpoon"):list().items
-						items[item.idx], items[item.idx - 1] = items[item.idx - 1], items[item.idx]
-						local new_idx = item.idx - 1
+						local list = require("harpoon"):list()
+						local prev_idx
+						for i = item.harpoon_idx - 1, 1, -1 do
+							if list.items[i] then
+								prev_idx = i
+								break
+							end
+						end
+						if not prev_idx then
+							return
+						end
+						list.items[item.harpoon_idx], list.items[prev_idx] =
+							list.items[prev_idx], list.items[item.harpoon_idx]
+						harpoon_ext.extensions:emit(harpoon_ext.event_names.REORDER, { list = list })
+						local new_row = item.picker_row - 1
 						picker:find({
 							refresh = true,
 							on_done = function()
-								picker.list:move(new_idx, true, true)
+								picker.list:move(new_row, true, true)
 							end,
 						})
 					end,
@@ -83,16 +132,25 @@ return {
 						if not item then
 							return
 						end
-						local items = require("harpoon"):list().items
-						if item.idx >= #items then
+						local list = require("harpoon"):list()
+						local next_idx
+						for i = item.harpoon_idx + 1, list:length() do
+							if list.items[i] then
+								next_idx = i
+								break
+							end
+						end
+						if not next_idx then
 							return
 						end
-						items[item.idx], items[item.idx + 1] = items[item.idx + 1], items[item.idx]
-						local new_idx = item.idx + 1
+						list.items[item.harpoon_idx], list.items[next_idx] =
+							list.items[next_idx], list.items[item.harpoon_idx]
+						harpoon_ext.extensions:emit(harpoon_ext.event_names.REORDER, { list = list })
+						local new_row = item.picker_row + 1
 						picker:find({
 							refresh = true,
 							on_done = function()
-								picker.list:move(new_idx, true, true)
+								picker.list:move(new_row, true, true)
 							end,
 						})
 					end,

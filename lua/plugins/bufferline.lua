@@ -7,10 +7,34 @@ return {
 	},
 	config = function()
 		local bufferline = require("bufferline")
+		local Path = require("plenary.path")
+
+		local function harpoon_prefix(buf)
+			local ok, harpoon = pcall(require, "harpoon")
+			if not ok or not buf.path or buf.path == "" then
+				return nil
+			end
+			local list = harpoon:list()
+			local rel = Path:new(buf.path):make_relative(vim.loop.cwd())
+			for i = 1, list:length() do
+				local it = list.items[i]
+				if it and it.value == rel then
+					return i
+				end
+			end
+		end
+
 		bufferline.setup({
 			options = {
 				mode = "buffers",
 				numbers = "none",
+				name_formatter = function(buf)
+					local slot = harpoon_prefix(buf)
+					if slot then
+						return "[" .. slot .. "] " .. buf.name
+					end
+					return buf.name
+				end,
 				close_command = "Bdelete! %d",
 				left_mouse_command = "buffer %d",
 				middle_mouse_command = nil,
