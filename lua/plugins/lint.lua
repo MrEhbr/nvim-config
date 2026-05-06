@@ -9,13 +9,7 @@ return {
 				sh = { "shellcheck" },
 				bash = { "shellcheck" },
 				dockerfile = { "hadolint" },
-				yaml = { "actionlint" },
 			}
-
-			local actionlint = lint.linters.actionlint
-			actionlint.condition = function(ctx)
-				return ctx.filename:match("%.github/workflows/.*%.ya?ml$") ~= nil
-			end
 
 			local group = vim.api.nvim_create_augroup("nvim-lint", { clear = true })
 			vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {

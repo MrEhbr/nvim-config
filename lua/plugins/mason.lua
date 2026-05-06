@@ -27,7 +27,6 @@ return {
 				-- Linters (nvim-lint)
 				"shellcheck",
 				"hadolint",
-				"actionlint",
 
 				-- Formatters
 				"prettierd",
