@@ -1,3 +1,13 @@
+local lsp_start = vim.lsp.start
+vim.lsp.start = function(config, opts)
+	opts = opts or {}
+	local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
+	if vim.api.nvim_buf_get_name(bufnr):match("^octo://") then
+		return nil
+	end
+	return lsp_start(config, opts)
+end
+
 vim.lsp.enable({
 	"gopls",
 	"lua_ls",
@@ -23,6 +33,7 @@ vim.lsp.config("*", {
 	capabilities = require("config.lsp").capabilities,
 	root_markers = { ".git" },
 })
+
 
 vim.hl.priorities.semantic_tokens = 95
 vim.diagnostic.config({

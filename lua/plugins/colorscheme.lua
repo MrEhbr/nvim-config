@@ -46,6 +46,8 @@ return {
 					PmenuThumb = { bg = "#C0A36E" },
 					BlinkCmpMenuBorder = { fg = "", bg = "" },
 					CursorLineNr = { fg = colors.palette.sakuraPink, bg = "NONE" },
+
+					OctoFilePanelSelectedFile = { fg = colors.palette.sakuraPink, bg = theme.ui.bg_p2, bold = true },
 				}
 			end,
 			theme = "wave",
