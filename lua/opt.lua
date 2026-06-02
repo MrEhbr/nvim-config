@@ -70,4 +70,4 @@ o.confirm = true
 o.list = false
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "↷", precedes = "↶" }
 
-o.sessionoptions = "buffers,curdir,folds,winsize"
+vim.opt.diffopt:append("algorithm:histogram")
