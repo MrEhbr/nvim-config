@@ -40,6 +40,12 @@ return {
 					DapStopped = { fg = "#98c379", bg = "#31353f", bold = true },
 					DapLine = { bg = theme.diff.text },
 
+					-- Bright fg + distinct bg block for search matches. fff preview
+					-- uses IncSearch; on the match line its bg loses to CursorLine,
+					-- so the bright fg is what keeps the match readable there, while
+					-- the bg shows as a block on other occurrences.
+					IncSearch = { fg = colors.palette.surimiOrange, bg = colors.palette.waveBlue2, bold = true },
+
 					Pmenu = { fg = theme.ui.shade0, bg = "NONE" },
 					PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
 					PmenuSbar = { bg = theme.ui.bg_m1 },
