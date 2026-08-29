@@ -81,12 +81,13 @@ end
 return {
 	{
 		"mfussenegger/nvim-dap",
-		event = "VeryLazy",
 		dependencies = {
-			{ "leoluz/nvim-dap-go", opts = {}, ft = "go" },
+			"igorlfs/nvim-dap-view",
+			"theHamsta/nvim-dap-virtual-text",
+			"Jorenar/nvim-dap-disasm",
+			{ "leoluz/nvim-dap-go", opts = {} },
 			{
 				"MrEhbr/dap-rust.nvim",
-				ft = "rust",
 				config = function()
 					require("dap-rust").setup({
 						codelldb = {
@@ -242,6 +243,7 @@ return {
 	},
 	{
 		"Jorenar/nvim-dap-disasm",
+		lazy = true,
 		dependencies = { "igorlfs/nvim-dap-view" },
 		opts = {
 			dapview_register = true,
@@ -249,7 +251,6 @@ return {
 	},
 	{
 		"igorlfs/nvim-dap-view",
-		event = "VeryLazy",
 		opts = {
 			winbar = {
 				controls = {
@@ -291,7 +292,7 @@ return {
 	},
 	{
 		"theHamsta/nvim-dap-virtual-text",
-		dependencies = { "mfussenegger/nvim-dap" },
+		lazy = true,
 		opts = {
 			enabled = true,
 			enabled_commands = true,

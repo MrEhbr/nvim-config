@@ -1,6 +1,12 @@
 return {
 	"sindrets/diffview.nvim",
-	event = "VeryLazy",
+	cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+	keys = {
+		{ "<leader>hd", "<CMD>DiffviewOpen<CR>", desc = "  Show Git Diff" },
+		{ "<leader>hf", "<CMD>DiffviewFileHistory %<CR>", desc = "  Show File History" },
+		{ "<leader>hD", "<CMD>DiffviewOpen --cached<CR>", desc = "  Show Staged Diffs" },
+		{ "<leader>hx", "<CMD>DiffviewClose<CR>", desc = "  Close Diff View" },
+	},
 	config = function()
 		require("diffview").setup({
 			diff_binaries = false,
@@ -38,14 +44,5 @@ return {
 				end,
 			},
 		})
-
-		local nmap = function(keys, func, desc)
-			vim.keymap.set("n", keys, func, { desc = desc })
-		end
-
-		nmap("<leader>hd", "<CMD> DiffviewOpen<CR>", "  Show Git Diff")
-		nmap("<leader>hf", "<CMD> DiffviewFileHistory %<CR>", "  Show File History")
-		nmap("<leader>hD", "<CMD> DiffviewOpen --cached<CR>", "  Show Staged Diffs")
-		nmap("<leader>hx", "<CMD> DiffviewClose<CR>", "  Close Diff View")
 	end,
 }

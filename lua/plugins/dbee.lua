@@ -1,7 +1,6 @@
 return {
 	{
 		"kndndrj/nvim-dbee",
-		event = { "VeryLazy" },
 		ft = { "sql" },
 		dependencies = {
 			"MunifTanjim/nui.nvim",
