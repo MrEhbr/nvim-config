@@ -17,7 +17,7 @@ local layout = {
 local exclude = {
 	"**/mocks/*",
 	"**/node_modules/*",
-	"**/%.git/*",
+	"**/.git/*",
 	"**/target/*",
 	"**/dist/*",
 	"**/build/*",
@@ -27,9 +27,14 @@ local exclude = {
 	"**/.pnpm-store/*",
 }
 
+local exclude_re = vim.tbl_map(vim.fn.glob2regpat, exclude)
+
 local function filter_exclude(item)
-	for _, pattern in ipairs(exclude) do
-		if vim.fn.match(item.file, pattern) >= 0 then
+	if not item.file then
+		return true
+	end
+	for _, re in ipairs(exclude_re) do
+		if vim.fn.match(item.file, re) >= 0 then
 			return false
 		end
 	end

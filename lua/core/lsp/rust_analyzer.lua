@@ -56,7 +56,6 @@ local function apply(bufnr, mutate)
 	for _, client in ipairs(clients(bufnr)) do
 		mutate(client.settings["rust-analyzer"])
 		client:notify(vim.lsp.protocol.Methods.workspace_didChangeConfiguration, { settings = client.settings })
-		vim.lsp.config("rust_analyzer", { settings = client.settings })
 	end
 end
 

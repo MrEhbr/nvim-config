@@ -65,11 +65,22 @@ vim.diagnostic.config({
 
 local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = true })
 
+local function highlight_clients(bufnr, except_id)
+	return vim.tbl_filter(function(c)
+		return c.id ~= except_id and c:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, bufnr)
+	end, vim.lsp.get_clients({ bufnr = bufnr }))
+end
+
 vim.api.nvim_create_autocmd("LspDetach", {
 	group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
 	callback = function(event)
 		vim.lsp.buf.clear_references()
-		vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event.buf })
+		if not vim.api.nvim_buf_is_valid(event.buf) then
+			return
+		end
+		if #highlight_clients(event.buf, event.data.client_id) == 0 then
+			vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event.buf })
+		end
 	end,
 })
 
@@ -104,7 +115,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			end, { buffer = event.buf, desc = "Previous inline completion" })
 		end
 
-		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+		if
+			client
+			and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
+			and #vim.api.nvim_get_autocmds({ group = highlight_augroup, buffer = event.buf }) == 0
+		then
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				buffer = event.buf,
 				group = highlight_augroup,

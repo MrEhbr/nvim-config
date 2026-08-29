@@ -45,7 +45,7 @@ vim.keymap.set("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { desc = "Dont copy re
 vim.keymap.set("n", "<leader>ql", function()
 	local qf_open = false
 	for _, win in ipairs(vim.fn.getwininfo()) do
-		if win.quickfix == 1 then
+		if win.quickfix == 1 and win.loclist == 0 then
 			qf_open = true
 			break
 		end
