@@ -12,7 +12,7 @@ vim.lsp.enable({
 	"gopls",
 	"lua_ls",
 	"intelephense",
-	"rust-analyzer",
+	"rust_analyzer",
 	"yamlls",
 	"jsonls",
 	"harper_ls",
@@ -33,6 +33,9 @@ vim.lsp.config("*", {
 	capabilities = require("config.lsp").capabilities,
 	root_markers = { ".git" },
 })
+
+require("core.lsp.servers")
+require("core.lsp.rust_analyzer")
 
 
 vim.hl.priorities.semantic_tokens = 95
@@ -58,6 +61,16 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.WARN] = "WarningMsg",
 		},
 	},
+})
+
+local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = true })
+
+vim.api.nvim_create_autocmd("LspDetach", {
+	group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
+	callback = function(event)
+		vim.lsp.buf.clear_references()
+		vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event.buf })
+	end,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -92,7 +105,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-			local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = false })
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				buffer = event.buf,
 				group = highlight_augroup,
@@ -102,13 +114,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				buffer = event.buf,
 				group = highlight_augroup,
 				callback = vim.lsp.buf.clear_references,
-			})
-			vim.api.nvim_create_autocmd("LspDetach", {
-				group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
-				callback = function(event2)
-					vim.lsp.buf.clear_references()
-					vim.api.nvim_clear_autocmds({ group = "lsp-highlight", buffer = event2.buf })
-				end,
 			})
 		end
 	end,

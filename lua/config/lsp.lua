@@ -17,10 +17,6 @@ M.capabilities = vim.tbl_deep_extend(
 				lineFoldingOnly = true,
 			},
 		},
-		fileOperations = {
-			didRename = true,
-			willRename = true,
-		},
 	}
 )
 
