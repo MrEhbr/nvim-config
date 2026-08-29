@@ -41,6 +41,6 @@ result
 result-*
 
 # Misc
-nvim
+/nvim
 *.log
 .netrwhist

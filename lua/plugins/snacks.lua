@@ -64,7 +64,7 @@ return {
 			replace_netrw = true,
 			trash = true,
 		},
-		indent = { enabled = true },
+		indent = { enabled = true, indent = { char = "┊" } },
 		notifier = {
 			enabled = true,
 			timeout = 3000,

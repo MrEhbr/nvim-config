@@ -63,18 +63,6 @@ return {
 	},
 	-- { "hiphish/rainbow-delimiters.nvim", submodules = false, lazy = true, event = "BufReadPre" },
 	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-		opts = {
-			scope = {
-				show_exact_scope = true,
-			},
-			indent = {
-				char = "┊",
-			},
-		},
-	},
-	{
 		"folke/flash.nvim",
 		event = "VeryLazy",
 		opts = {},
