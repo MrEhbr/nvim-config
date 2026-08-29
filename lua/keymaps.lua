@@ -1,11 +1,15 @@
 -- Disable nvim 0.11 default LSP keymaps (we define our own)
-vim.keymap.del("n", "grr")
-vim.keymap.del("n", "gri")
-vim.keymap.del("n", "grn")
-vim.keymap.del("n", "grt")
-vim.keymap.del("n", "gra")
-vim.keymap.del("x", "gra")
-vim.keymap.del("n", "gO")
+for _, m in ipairs({
+	{ "n", "grr" },
+	{ "n", "gri" },
+	{ "n", "grn" },
+	{ "n", "grt" },
+	{ "n", "gra" },
+	{ "x", "gra" },
+	{ "n", "gO" },
+}) do
+	pcall(vim.keymap.del, m[1], m[2])
+end
 
 vim.keymap.set("n", "<Esc>", "<cmd> noh <CR>", { desc = "Clear highlights" })
 vim.keymap.set("n", ";", ":", { nowait = true, desc = "Enter Command Mode" })

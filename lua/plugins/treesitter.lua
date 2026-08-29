@@ -9,11 +9,16 @@ return {
 			---@param buf integer
 			---@param language string
 			local function treesitter_try_attach(buf, language)
+				if not vim.api.nvim_buf_is_valid(buf) then
+					return
+				end
 				if not vim.treesitter.language.add(language) then
 					return
 				end
-				vim.treesitter.start(buf, language)
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				if not pcall(vim.treesitter.start, buf, language) then
+					return
+				end
+				vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 			end
 
 			local available_parsers = require("nvim-treesitter").get_available()
