@@ -35,7 +35,9 @@ return {
 					end
 					return buf.name
 				end,
-				close_command = "Bdelete! %d",
+				close_command = function(bufnr)
+					require("bufdelete").bufdelete(bufnr, false)
+				end,
 				left_mouse_command = "buffer %d",
 				middle_mouse_command = nil,
 				indicator_icon = nil,

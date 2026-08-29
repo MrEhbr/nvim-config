@@ -78,11 +78,6 @@ return {
 					"--quiet",
 				},
 			},
-			templ = {
-				command = "templ",
-				args = { "fmt", "-stdin" },
-				stdin = true,
-			},
 			injected = {
 				condition = function(_, ctx)
 					-- skip just files: injected triggers just --fmt which adds [private] breaking treesitter

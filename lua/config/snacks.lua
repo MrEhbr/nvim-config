@@ -76,19 +76,17 @@ function M.actions.search_in_directory_case_sensitive(picker, item, action)
 	grep_in_directory(picker, item, { case_sensitive = true })
 end
 
-function M.actions.diff(picker, item, action)
-	picker:close()
+function M.actions.diff(picker)
 	local sel = picker:selected()
-	if #sel > 0 and sel then
-		Snacks.notify.info(sel[1].file)
-		-- vim.cmd("tabnew " .. sel[1].file .. " vert diffs " .. sel[2].file)
-		vim.cmd("tabnew " .. sel[1].file)
-		vim.cmd("vert diffs " .. sel[2].file)
-		Snacks.notify.info("Diffing " .. sel[1].file .. " against " .. sel[2].file)
+	if #sel ~= 2 then
+		Snacks.notify.warn("Select exactly two entries for the diff")
 		return
 	end
 
-	Snacks.notify.info("Select two entries for the diff")
+	picker:close()
+	vim.cmd("tabnew " .. vim.fn.fnameescape(sel[1].file))
+	vim.cmd("vert diffsplit " .. vim.fn.fnameescape(sel[2].file))
+	Snacks.notify.info("Diffing " .. sel[1].file .. " against " .. sel[2].file)
 end
 
 M.next_dir = function(cwd, filter, opts)
