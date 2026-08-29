@@ -10,15 +10,16 @@ return {
 				"pyright",
 				"nil", -- nix
 				"templ",
-				"gopls",
 				"htmx-lsp",
 				"tailwindcss-language-server",
 				"json-lsp",
 				"yaml-language-server",
 				"lua-language-server",
-				"rust-analyzer",
 				"jdtls",
 				"typescript-language-server",
+				-- Test runners
+				"gotestsum",
+
 				-- Diagnostic
 				"harper-ls",
 				-- "golangci-lint",
