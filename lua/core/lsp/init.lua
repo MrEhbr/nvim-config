@@ -15,7 +15,7 @@ vim.lsp.enable({
 	"rust_analyzer",
 	"yamlls",
 	"jsonls",
-	"harper_ls",
+	-- "harper_ls",
 	-- "postgres_lsp",
 	"tailwindcss",
 	"marksman",
