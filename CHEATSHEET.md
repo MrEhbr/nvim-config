@@ -6,17 +6,21 @@
 
 ---
 
-## File Navigation (Snacks.nvim)
+## File Navigation
+
+`<leader>ff` / `fg` / `fw` are served by **fff.nvim**; the rest by **Snacks.nvim**.
 
 | Key | Action |
 |-----|--------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Grep search |
-| `<leader>fw` | Grep word under cursor (normal + visual) |
+| `<leader>ff` | Find files (fff) |
+| `<leader>fg` | Grep search (fff) |
+| `<leader>fw` | Grep word under cursor (fff, normal + visual) |
 | `<leader>fo` | Recent files |
 | `<leader>fr` | Resume last picker |
 | `<C-n>` | Toggle file explorer |
+| `-` | Open parent directory (oil.nvim) |
 | `<leader>fc` | Search in current buffer |
+| `<leader>sj` | Jumplist (filtered to cwd) |
 | `<leader>sd` | Buffer diagnostics |
 | `<leader>sD` | Workspace diagnostics |
 
@@ -152,12 +156,12 @@ Once a picker is open, these keybindings are available. Most work in both insert
 
 ---
 
-## LSP (15 languages supported)
+## LSP
 
 | Key | Action |
 |-----|--------|
 | `K` | Hover documentation |
-| `<C-k>` | Signature help (also in insert mode) |
+| `<C-S-k>` | Signature help (also in insert mode) |
 | `gd` | Go to definition |
 | `gD` | Go to declaration |
 | `gr` | Find references |
@@ -170,8 +174,17 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>fm` | Format file |
 | `<leader>ld` | Document symbols |
 | `<leader>lw` | Workspace symbols |
+| `<leader>ll` | Trigger linting (nvim-lint) |
+| `[d` / `]d` | Prev/next diagnostic |
+| `[D` / `]D` | First/last diagnostic in buffer |
+| `<C-w>d` | Show diagnostics under cursor |
+| `<M-]>` / `<M-[>` | Next/prev inline completion (insert) |
 
-**Supported Languages**: Go, Rust, Lua, PHP, TypeScript/JS, JSON, YAML, Markdown, Nix, Dart, Java, Tailwind CSS, Templ
+> `<C-k>` is **window up**, not signature help. Signature help is `<C-S-k>`, which
+> needs a terminal that distinguishes Ctrl+Shift (kitty keyboard protocol).
+
+**Enabled servers**: gopls, rust_analyzer, lua_ls, intelephense, ts_ls, jsonls,
+yamlls, marksman, nil_ls, dartls, jdtls, tailwindcss, templ, copilot
 
 ---
 
@@ -188,6 +201,7 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>hp` | Preview hunk |
 | `<leader>hb` | Blame line |
 | `<leader>tb` | Toggle line blame |
+| `ih` | Git hunk textobject (operator/visual) |
 | `<leader>gs` | Git status picker |
 | `<leader>gl` | Git log |
 | `<leader>gL` | Git log (current line) |
@@ -198,6 +212,25 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>hf` | File history |
 | `<leader>hD` | Staged diffs |
 | `<leader>hx` | Close diffview |
+
+---
+
+## GitHub (Octo)
+
+| Key | Action |
+|-----|--------|
+| `<leader>Op` | PR list |
+| `<leader>OP` | PR create |
+| `<leader>Os` | PR search |
+| `<leader>Or` | Review start |
+| `<leader>Oi` | Issue list |
+| `<leader>OI` | Issue create |
+| `<leader>OS` | Search |
+| `<leader>OR` | Repo list |
+| `<leader>On` | Notifications |
+| `<leader>Oa` | Actions menu |
+
+While reviewing a diff, `J` / `K` move between changed files.
 
 ---
 
@@ -213,6 +246,7 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>do` | Step over |
 | `<leader>dO` | Step out |
 | `<leader>dj/dk` | Stack down/up |
+| `<leader>dg` | Jump to line (no execution) |
 | `<leader>dl` | Run last |
 | `<leader>dp` | Pause |
 | `<leader>dr` | Toggle REPL |
@@ -222,7 +256,10 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>dh` | Hover variable |
 | `<leader>du` | Toggle DAP UI |
 
-**Supports**: Go, Rust, PHP, JavaScript
+**Supports**: Go (delve), Rust (codelldb), PHP (Xdebug)
+
+> `js-debug-adapter` is installed by Mason but no JavaScript adapter or
+> configuration is wired up in `lua/plugins/dap.lua`.
 
 ---
 
@@ -242,6 +279,24 @@ Once a picker is open, these keybindings are available. Most work in both insert
 | `<leader>tt` | Stop test |
 | `<leader>td` | Debug nearest test |
 | `<leader>tD` | Debug test file |
+
+---
+
+## Cut, Delete & Registers (cutlass)
+
+Deleting does **not** clobber your yank register. `x` is the cut operation.
+
+| Key | Action |
+|-----|--------|
+| `d` / `D` | Delete (to black hole — does not overwrite the register) |
+| `c` / `C` | Change (to black hole) |
+| `s` / `S` | Only in select mode; `s` is Flash in normal/visual |
+| `x` | Cut (this is what fills the register) |
+| `X` | Cut to end of line |
+| `xx` | Cut line |
+| `<Del>` | Delete without clobbering the register |
+| `gp` | Paste from system clipboard |
+| `p` (visual) | Paste over selection, keeping the original register |
 
 ---
 
@@ -268,7 +323,8 @@ Once a picker is open, these keybindings are available. Most work in both insert
 
 | Key | Action |
 |-----|--------|
-| `<leader>/` | Toggle comment |
+| `<leader>/` | Toggle comment (mini.comment) |
+| `gc{motion}` / `gcc` | Toggle comment (Neovim built-in) |
 
 ### Textobjects (mini.ai)
 
@@ -348,6 +404,10 @@ Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
 | `<leader>sq` | Quickfix picker |
 | `<leader>uh` | Undo history |
 | `<leader>qq` | Quit all |
+| `<M-p>` | Toggle nvim-dbee (database UI) |
+| `gx` | Open file path or URI under cursor |
+| `g/` | Search inside visual selection |
+| `:ShowkeysToggle` | Toggle on-screen keypress display |
 
 ---
 
@@ -366,6 +426,27 @@ Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
 
 ---
 
+## Bracket Navigation
+
+From mini.basics unless noted.
+
+| Key | Action |
+|-----|--------|
+| `[b` / `]b` | Prev/next buffer |
+| `[q` / `]q` | Prev/next quickfix item |
+| `[l` / `]l` | Prev/next location list item |
+| `[t` / `]t` | Prev/next class/type start (treesitter) |
+| `[f` / `]f` | Prev/next function start (treesitter) |
+| `[F` / `]F` | Prev/next function end (treesitter) |
+| `[a` / `]a` | Prev/next parameter (treesitter) |
+| `[n` / `]n` | Select prev/next node (visual) |
+| `[N` / `]N` | Select prev/next sibling node (visual) |
+| `[` / `]` | Add empty line above/below |
+
+Uppercase variants (`[B`, `]Q`, `[L`, …) jump to first/last.
+
+---
+
 ## Code Folding (UFO)
 
 | Key | Action |
@@ -373,17 +454,8 @@ Enhanced `a` (around) and `i` (inside) textobjects with extra targets.
 | `zR` | Open all folds |
 | `zr` | Open folds (except kinds) |
 | `zM` | Close all folds |
+| `zm` | Close folds by level |
 | `zK` | Peek fold |
-
----
-
-## Treesitter Context
-
-| Key | Action |
-|-----|--------|
-| `[C` | Jump to sticky context (enclosing function/class) |
-
-Sticky headers show up to 3 lines of the enclosing function/class/block at the top of the window.
 
 ---
 
@@ -478,7 +550,6 @@ Flash.nvim provides lightning-fast navigation with labeled jump targets.
 | `<Esc>` | Clear highlights |
 | `;` | Enter command mode |
 | `n` / `N` | Next/prev search (centered) |
-| `J` | Join lines (cursor preserved) |
 
 ### Insert Mode
 
@@ -505,6 +576,13 @@ Flash.nvim provides lightning-fast navigation with labeled jump targets.
 
 Formatters configured for: Go, Lua, Python, Shell, JavaScript/TypeScript, Markdown, Nix, PHP, SQL, Protobuf, Templ
 
+Toggle with `<leader>uf`, or format on demand with `<leader>fm`. PHP formats
+*after* save (Pint is slow); everything else formats before save.
+
+> Formatting silently falls back to the LSP when a formatter binary is absent.
+> Run `:MasonInstallAll` to provision the configured tools, and `:ConformInfo`
+> to see what actually ran for the current buffer.
+
 ---
 
 ## Tips for Better Usage
@@ -526,17 +604,20 @@ Formatters configured for: Go, Lua, Python, Shell, JavaScript/TypeScript, Markdo
 
 | Category | Plugins |
 |----------|---------|
-| **UI** | kanagawa, lualine, bufferline, snacks.nvim |
-| **Completion** | blink.cmp, friendly-snippets |
-| **LSP** | nvim-lspconfig (built-in), lazydev |
-| **Syntax** | nvim-treesitter, indent-blankline |
+| **UI** | kanagawa, lualine, bufferline, snacks.nvim, tiny-inline-diagnostic, which-key |
+| **Completion** | blink.cmp, friendly-snippets, lazydev |
+| **LSP** | nvim-lspconfig, mason.nvim |
+| **Syntax** | nvim-treesitter, treesitter-textobjects, nvim-colorizer |
 | **Formatting** | conform.nvim |
-| **Git** | gitsigns, diffview |
-| **Testing** | neotest (go, rust, plenary adapters) |
-| **Debugging** | nvim-dap, dap-ui |
-| **Navigation** | harpoon, flash.nvim, oil.nvim |
-| **Text** | mini.nvim (ai, surround, comment, pairs) |
+| **Linting** | nvim-lint |
+| **Git** | gitsigns, diffview, octo.nvim |
+| **Testing** | neotest (golang, rust, plenary, vim-test), nvim-coverage |
+| **Debugging** | nvim-dap, nvim-dap-view, dap-virtual-text, dap-disasm |
+| **Navigation** | harpoon, flash.nvim, oil.nvim, fff.nvim, vim-tmux-navigator |
+| **Text** | mini.nvim (basics, ai, surround, comment, pairs), cutlass |
 | **AI** | sidekick.nvim |
 | **Folding** | nvim-ufo |
 | **Database** | nvim-dbee |
 | **Markdown** | render-markdown.nvim |
+
+Indent guides come from `snacks.indent` (toggle with `<leader>ug`).
