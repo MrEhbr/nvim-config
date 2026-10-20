@@ -1,6 +1,6 @@
 return {
 	{
-		"dmtrKovalenko/fff.nvim",
+		"dmtrKovalenko/fff",
 		lazy = false,
 		build = function()
 			require("fff.download").download_or_build_binary()
@@ -42,7 +42,7 @@ return {
 					require("fff").live_grep({ query = vim.fn.expand("<cword>") })
 				end,
 				mode = { "n", "x" },
-				desc = "Grep Word",
+				desc = "Search current word / selection",
 			},
 		},
 	},
