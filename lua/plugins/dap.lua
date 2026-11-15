@@ -21,8 +21,6 @@ local function get_arguments()
 	end)
 end
 
-local last_resolved_config = nil
-
 local function go_configurations(dap)
 	dap.configurations.go = {
 		{
@@ -176,11 +174,7 @@ return {
 			{
 				"<leader>dl",
 				function()
-					if last_resolved_config then
-						require("dap").run(last_resolved_config)
-					else
-						require("dap").continue()
-					end
+					require("dap").run_last()
 				end,
 				desc = "[d]ebug [l]ast",
 			},
@@ -234,10 +228,6 @@ return {
 
 			dap.providers.configs["launch.json"] = function()
 				return require("dap.ext.vscode").getconfigs(vim.fn.getcwd() .. "/.run/launch.json") or {}
-			end
-
-			dap.listeners.after.event_initialized["capture_last_config"] = function(session)
-				last_resolved_config = vim.deepcopy(session.config)
 			end
 		end,
 	},
