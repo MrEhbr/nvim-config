@@ -8,8 +8,11 @@ autocmd("FileType", {
 })
 
 autocmd("VimResized", {
-	pattern = "*",
-	command = "tabdo wincmd =",
+	callback = function()
+		local current_tab = vim.fn.tabpagenr()
+		vim.cmd("tabdo wincmd =")
+		vim.cmd("tabnext " .. current_tab)
+	end,
 })
 
 autocmd("FileType", {
