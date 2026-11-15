@@ -19,12 +19,21 @@ return {
 				vim.keymap.set(mode, l, r, opts)
 			end
 
+			local function codediff_active()
+				local lifecycle = package.loaded["codediff.ui.lifecycle"]
+				return lifecycle ~= nil and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) ~= nil
+			end
+
 			map({ "n", "v" }, "]c", function()
 				if vim.wo.diff then
 					return "]c"
 				end
 				vim.schedule(function()
-					gs.next_hunk()
+					if codediff_active() then
+						require("codediff").next_hunk()
+					else
+						gs.nav_hunk("next")
+					end
 				end)
 				return "<Ignore>"
 			end, {
@@ -37,7 +46,11 @@ return {
 					return "[c"
 				end
 				vim.schedule(function()
-					gs.prev_hunk()
+					if codediff_active() then
+						require("codediff").prev_hunk()
+					else
+						gs.nav_hunk("prev")
+					end
 				end)
 				return "<Ignore>"
 			end, {
@@ -48,7 +61,7 @@ return {
 			map("v", "<leader>hs", function()
 				gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 			end, {
-				desc = "[s]tage git [h]unk",
+				desc = "[s]tage/unstage git [h]unk",
 			})
 			map("v", "<leader>hr", function()
 				gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
@@ -56,16 +69,13 @@ return {
 				desc = "[r]eset git [h]unk",
 			})
 			map("n", "<leader>hs", gs.stage_hunk, {
-				desc = "[s]tage git [h]unk",
+				desc = "[s]tage/unstage git [h]unk",
 			})
 			map("n", "<leader>hr", gs.reset_hunk, {
 				desc = "[r]eset git [h]unk",
 			})
 			map("n", "<leader>hS", gs.stage_buffer, {
 				desc = "[S]tage All [h]unks in Buffer",
-			})
-			map("n", "<leader>hu", gs.undo_stage_hunk, {
-				desc = "[u]ndo Stage of Git [h]unk",
 			})
 			map("n", "<leader>hR", gs.reset_buffer, {
 				desc = "[R]eset All Git Hunks in Buffer",
