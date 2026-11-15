@@ -42,24 +42,6 @@ vim.keymap.set("v", "<", "<gv", { desc = "Indent line" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent line" })
 vim.keymap.set("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { desc = "Dont copy replaced text", silent = true })
 
-vim.keymap.set("n", "<leader>ql", function()
-	local qf_open = false
-	for _, win in ipairs(vim.fn.getwininfo()) do
-		if win.quickfix == 1 and win.loclist == 0 then
-			qf_open = true
-			break
-		end
-	end
-	if qf_open then
-		vim.cmd("cclose")
-	else
-		vim.cmd("copen")
-	end
-end, { desc = "Toggle Quickfix List" })
-
 vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
 vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>zz", { desc = "Previous quickfix" })
 vim.keymap.set("n", "<leader>qq", "<cmd>qa<CR>", { desc = "Quit All" })
-
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev search result" })
