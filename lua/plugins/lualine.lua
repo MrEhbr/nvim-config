@@ -51,6 +51,16 @@ return {
 					},
 				},
 				lualine_x = {
+					{
+						function()
+							return "recording @" .. vim.fn.reg_recording()
+						end,
+						cond = function()
+							return vim.fn.reg_recording() ~= ""
+						end,
+						color = "DiagnosticWarn",
+					},
+					"%S",
 					function()
 						return require("direnv").statusline()
 					end,
@@ -88,6 +98,13 @@ return {
 				lualine_z = { "location" },
 			},
 			tabline = {},
+		})
+
+		vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+			group = vim.api.nvim_create_augroup("lualine-recording", { clear = true }),
+			callback = function()
+				vim.schedule(require("lualine").refresh)
+			end,
 		})
 	end,
 }
