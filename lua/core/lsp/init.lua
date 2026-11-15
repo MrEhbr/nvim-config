@@ -22,7 +22,7 @@ vim.lsp.enable({
 	"nil_ls",
 	"templ",
 	"dartls",
-	"copilot",
+	-- "copilot",
 	"jdtls",
 	"ts_ls",
 })
@@ -37,7 +37,6 @@ vim.lsp.config("*", {
 require("core.lsp.servers")
 require("core.lsp.rust_analyzer")
 
-
 vim.hl.priorities.semantic_tokens = 95
 vim.diagnostic.config({
 	virtual_lines = false,
@@ -46,7 +45,6 @@ vim.diagnostic.config({
 	update_in_insert = false,
 	severity_sort = true,
 	float = {
-		border = "single",
 		source = true,
 	},
 	signs = {
@@ -61,27 +59,6 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.WARN] = "WarningMsg",
 		},
 	},
-})
-
-local highlight_augroup = vim.api.nvim_create_augroup("lsp-highlight", { clear = true })
-
-local function highlight_clients(bufnr, except_id)
-	return vim.tbl_filter(function(c)
-		return c.id ~= except_id and c:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, bufnr)
-	end, vim.lsp.get_clients({ bufnr = bufnr }))
-end
-
-vim.api.nvim_create_autocmd("LspDetach", {
-	group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
-	callback = function(event)
-		vim.lsp.buf.clear_references()
-		if not vim.api.nvim_buf_is_valid(event.buf) then
-			return
-		end
-		if #highlight_clients(event.buf, event.data.client_id) == 0 then
-			vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event.buf })
-		end
-	end,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -115,23 +92,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.keymap.set("i", "<M-[>", function()
 				vim.lsp.inline_completion.select({ count = -1 })
 			end, { buffer = event.buf, desc = "Previous inline completion" })
-		end
-
-		if
-			client
-			and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
-			and #vim.api.nvim_get_autocmds({ group = highlight_augroup, buffer = event.buf }) == 0
-		then
-			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-				buffer = event.buf,
-				group = highlight_augroup,
-				callback = vim.lsp.buf.document_highlight,
-			})
-			vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-				buffer = event.buf,
-				group = highlight_augroup,
-				callback = vim.lsp.buf.clear_references,
-			})
 		end
 	end,
 })
