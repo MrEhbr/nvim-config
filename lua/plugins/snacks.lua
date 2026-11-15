@@ -257,6 +257,7 @@ return {
 			"<C-n>",
 			function()
 				Snacks.explorer({
+					watch = false,
 					git_status = true,
 					git_untracked = true,
 					exclude = { "node_modules", "coverage" },
