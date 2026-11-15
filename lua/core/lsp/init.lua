@@ -93,7 +93,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		map("K", vim.lsp.buf.hover, "Hover Documentation")
 		map("<C-S-k>", vim.lsp.buf.signature_help, "Signature Help", { "n", "i" })
-		map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+		map("<leader>ca", function()
+			require("tiny-code-action").code_action()
+		end, "Code Action", { "n", "x" })
 		map("<leader>la", vim.lsp.codelens.run, "Run Code Lens Action")
 		map("<leader>lr", vim.lsp.buf.rename, "Rename Symbol")
 		map("<leader>lh", function()
