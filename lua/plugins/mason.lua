@@ -7,10 +7,8 @@ return {
 				-- LSP
 				"marksman",
 				"intelephense",
-				"pyright",
 				"nil", -- nix
 				"templ",
-				"htmx-lsp",
 				"tailwindcss-language-server",
 				"json-lsp",
 				"yaml-language-server",
