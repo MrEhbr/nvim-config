@@ -13,6 +13,7 @@ return {
 					},
 				},
 			},
+			{ "mikavilpas/blink-ripgrep.nvim", version = "*" },
 		},
 		version = "1.*",
 		opts = {
@@ -45,7 +46,7 @@ return {
 				end,
 			},
 			sources = {
-				default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+				default = { "lazydev", "lsp", "path", "snippets", "buffer", "ripgrep" },
 				per_filetype = {
 					sql = { "buffer" },
 				},
@@ -63,6 +64,17 @@ return {
 						name = "LazyDev",
 						module = "lazydev.integrations.blink",
 						score_offset = 100,
+					},
+
+					ripgrep = {
+						name = "Ripgrep",
+						module = "blink-ripgrep",
+						async = true,
+						score_offset = -5,
+						opts = {
+							prefix_min_len = 3,
+							backend = { use = "gitgrep-or-ripgrep" },
+						},
 					},
 				},
 			},
@@ -99,6 +111,6 @@ return {
 				},
 			},
 		},
-		opts_extend = { "sources.default", "sources.completion.enabled_providers" },
+		opts_extend = { "sources.default" },
 	},
 }
