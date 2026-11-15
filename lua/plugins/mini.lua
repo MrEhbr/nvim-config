@@ -1,7 +1,12 @@
 return {
+	{ "nvim-tree/nvim-web-devicons", enabled = false },
 	{
-		"echasnovski/mini.nvim",
+		"nvim-mini/mini.nvim",
+		priority = 1000,
 		config = function()
+			require("mini.icons").setup()
+			MiniIcons.mock_nvim_web_devicons()
+
 			require("mini.basics").setup({
 				options = {
 					basic = false,
@@ -11,7 +16,7 @@ return {
 				mappings = {
 					basic = true,
 					option_toggle_prefix = "",
-					windows = true,
+					windows = false,
 					move_with_alt = true,
 				},
 
